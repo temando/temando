@@ -1,0 +1,17 @@
+div.confirm-insurance {
+
+}
+
+div.confirm-insurance {
+    border-spacing: 10px;
+    background: none repeat scroll 0 0 #F9F3E3;
+    border: 1px solid #BBAFA0;
+    margin: 10px;
+    padding: 10px;
+}
+
+div.confirm-insurance td.c2 {
+    padding-left: 15px;
+    font-size: 12px;
+    font-style: italic;
+}

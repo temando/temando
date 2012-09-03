@@ -1,0 +1,24 @@
+<?php
+
+/* @var $this Ewave_Temando_Block_Adminhtml_Shipment_Edit_Tab_Form */
+?>
+
+<div>
+    <div class="box-left">
+        <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_status')->setTemplate('ewave/temando/shipment/status.phtml')->toHtml(); ?>
+        <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_anytime')->setTemplate('ewave/temando/shipment/anytime.phtml')->toHtml(); ?>
+	<?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_origin')->setTemplate('ewave/temando/shipment/origin.phtml')->toHtml(); ?>
+    </div>
+    <div class="box-right">
+        <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_anywhere')->setTemplate('ewave/temando/shipment/anywhere.phtml')->toHtml(); ?>
+        <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_insurance')->setTemplate('ewave/temando/shipment/insurance.phtml')->toHtml(); ?>
+    </div>
+    <div class="clear"></div>
+    
+    <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_products')->setTemplate('ewave/temando/shipment/products.phtml')->toHtml(); ?>
+    <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_boxes')->setTemplate('ewave/temando/shipment/boxes.phtml')->toHtml(); ?>
+    
+    <?php if ($this->getShipment()->getStatus() == Ewave_Temando_Model_System_Config_Source_Shipment_Status::PENDING && count($this->getQuotes())): ?>
+        <?php echo $this->getLayout()->createBlock('temando/adminhtml_shipment_edit_tab_form_quotes')->setTemplate('ewave/temando/shipment/quotes.phtml')->toHtml(); ?>
+    <?php endif; ?>
+</div>

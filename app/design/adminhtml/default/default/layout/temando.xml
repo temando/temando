@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_catalog_product_edit>
+	<reference name="head">
+	    <action method="addItem"><type>skin_js</type><name>js/temando-package.js</name></action>
+	</reference>
+        <reference name="product_tabs">
+            <action method="addTab">
+                <name>temando_packaging_tab</name>
+                <block>temando/adminhtml_catalog_product_tab</block>
+            </action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+    
+    <adminhtml_system_config_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>temando/styles.css</name></action>
+	    <block type="page/html" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
+        </reference>
+    </adminhtml_system_config_edit>
+
+    <temando_adminhtml_shipment_index>
+        <reference name="content">
+            <block type="temando/adminhtml_shipment" name="temando_shipment">
+                <block type="temando/adminhtml_shipment_grid" name="temando_shipment_grid" />
+            </block>
+        </reference>
+    </temando_adminhtml_shipment_index>
+    
+    <temando_adminhtml_shipment_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>temando/styles.css</name></action>
+        </reference>
+        <reference name="content">
+            <block type="temando/adminhtml_shipment_edit" name="temando_shipment_edit" />
+        </reference>
+        <reference name="left">
+            <block type="temando/adminhtml_shipment_edit_tabs" name="temando_shipment_edit_tabs">
+                <action method="addTab">
+                    <name>temando_shipment_edit_tab_form</name>
+                    <block>temando/adminhtml_shipment_edit_tab_form</block>
+                </action>
+            </block>
+        </reference>
+    </temando_adminhtml_shipment_edit>
+
+    <temando_adminhtml_manifest_index>
+        <reference name="content">
+            <block type="temando/adminhtml_manifest" template="ewave/temando/manifest.phtml" name="temando_manifest">
+                <block type="temando/adminhtml_manifest_filter_form" name="grid.filter.form" />
+            </block>
+        </reference>
+    </temando_adminhtml_manifest_index>
+    
+    <temando_adminhtml_warehouse_index>
+	<reference name="content">
+	    <block type="temando/adminhtml_warehouse" name="temando_warehouse">
+		<block type="temando/adminhtml_warehouse_grid" name="temando_warehouse_grid" />
+	    </block>
+	</reference>
+    </temando_adminhtml_warehouse_index>
+    
+    <temando_adminhtml_warehouse_edit>
+	<reference name="head">
+	    <block type="page/html" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
+	</reference>
+        <reference name="left">
+            <block type="temando/adminhtml_warehouse_edit_tabs" name="temando_warehouse_edit_tabs">
+		<block type="temando/adminhtml_warehouse_edit_tab_general" name="temando_warehouse_edit_tab_general" />
+		<block type="temando/adminhtml_warehouse_edit_tab_origin" name="temando_warehouse_edit_tab_origin" />
+		<block type="temando/adminhtml_warehouse_edit_tab_zone" name="temando_warehouse_edit_tab_zone" />
+		<action method="addTab"><name>general_section</name><block>temando_warehouse_edit_tab_general</block></action>
+		<action method="addTab"><name>origin_section</name><block>temando_warehouse_edit_tab_origin</block></action>
+		<action method="addTab"><name>zone_section</name><block>temando_warehouse_edit_tab_zone</block></action>
+	    </block>	
+        </reference>
+	<reference name="content">
+            <block type="temando/adminhtml_warehouse_edit" name="temando_warehouse_edit" />
+        </reference>
+    </temando_adminhtml_warehouse_edit>
+    
+    <temando_adminhtml_warehouse_related>
+	<block type="core/text_list" name="root">
+	    <block type="temando/adminhtml_warehouse_edit_tab_related" name="temando.warehouse.edit.tab.related"/>
+	    <block type="adminhtml/widget_grid_serializer" name="related_grid_serializer">
+		<reference name="related_grid_serializer">
+		    <action method="initSerializerBlock">
+			<grid_block_name>temando.warehouse.edit.tab.related</grid_block_name>
+			<data_callback>getSelectedRelatedProducts</data_callback>
+			<hidden_input_name>links[related]</hidden_input_name>
+			<reload_param_name>products_related</reload_param_name>
+		    </action>
+		    <action method="addColumnInputName">
+			<input_name>quantity</input_name>
+		    </action>
+		</reference>
+	    </block>
+	</block>
+    </temando_adminhtml_warehouse_related>
+	
+    <temando_adminhtml_warehouse_relatedgrid>
+	<block type="core/text_list" name="root">
+	    <block type="temando/adminhtml_warehouse_edit_tab_related" name="temando.warehouse.edit.tab.related"/>
+	</block>
+    </temando_adminhtml_warehouse_relatedgrid>
+
+    <temando_adminhtml_zone_index>
+	<reference name="content">
+	    <block type="temando/adminhtml_zone" name="temando_zone">
+		<block type="temando/adminhtml_zone_grid" name="temando_zone_grid"/>
+	    </block>
+	</reference>
+    </temando_adminhtml_zone_index>
+    
+    <temando_adminhtml_zone_edit>
+	<reference name="head">
+	    <action method="addItem"><type>skin_js</type><name>js/temando-validate.js</name></action>
+	</reference>
+        <reference name="left">
+            <block type="temando/adminhtml_zone_edit_tabs" name="temando_zone_edit_tabs">
+		<block type="temando/adminhtml_zone_edit_tab_general" name="temando_zone_edit_tab_general" />
+		<action method="addTab"><name>general_section</name><block>temando_zone_edit_tab_general</block></action>
+	    </block>	
+        </reference>
+	<reference name="content">
+            <block type="temando/adminhtml_zone_edit" name="temando_zone_edit" />
+        </reference>
+    </temando_adminhtml_zone_edit>  
+    
+    <temando_adminhtml_rule_index>
+	<reference name="content">
+	    <block type="temando/adminhtml_rule" name="temando_rule">
+		<block type="temando/adminhtml_rule_grid" name="temando_rule_grid"/>
+	    </block>
+	</reference>
+    </temando_adminhtml_rule_index>
+    
+    <temando_adminhtml_rule_edit>
+	<reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/temando-validate.js</name></action>
+        </reference>
+        <reference name="left">
+            <block type="temando/adminhtml_rule_edit_tabs" name="temando_rule_edit_tabs">
+		<block type="temando/adminhtml_rule_edit_tab_main" name="temando_rule_edit_tab_main" />
+		<block type="temando/adminhtml_rule_edit_tab_conditions" name="temando_rule_edit_tab_conditions" />
+		<block type="temando/adminhtml_rule_edit_tab_actions" name="temando_rule_edit_tab_actions" />
+		<action method="addTab"><name>main_section</name><block>temando_rule_edit_tab_main</block></action>
+		<action method="addTab"><name>conditions_section</name><block>temando_rule_edit_tab_conditions</block></action>
+		<action method="addTab"><name>actions_section</name><block>temando_rule_edit_tab_actions</block></action>
+	    </block>	
+        </reference>
+	<reference name="content">
+            <block type="temando/adminhtml_rule_edit" name="temando_rule_edit" />
+        </reference>
+    </temando_adminhtml_rule_edit>
+
+</layout>

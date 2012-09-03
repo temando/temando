@@ -1,0 +1,70 @@
+<?php if (Mage::helper('temando')->getConfigData('options/show_product_estimate')): ?>
+<div class="block block-shipping">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Estimate Shipping') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <div class='estimate-form'>
+            <form action="" name="estimate_form" method="post" onsubmit="javascript: return false;">
+                <input type='hidden' name='country_id' id='country_id' value='<?php echo $this->getCountryId(); ?>' />
+                <input type='hidden' name='region_id' id='region_id' value='<?php echo $this->getRegionId(); ?>' />
+                <input type='hidden' name='city' id='city' value='<?php echo $this->getCity(); ?>' />
+                <input type='hidden' name='postcode' id='postcode' value='<?php echo $this->getPostcode(); ?>' />
+                <input type='hidden' name='product_id' id='product_id' value='<?php echo $this->getProductId(); ?>' />
+                <!--input type='hidden' name='qty' id='qty' value='<?php echo $this->getQty(); ?>' /-->
+                <input type='hidden' name='options' id='options' value='<?php echo $this->getOptions(); ?>' />
+                <div class='estimate-field' id='estimate_field'>
+                    <input type='text' class='input-text' name='pcs' id='pcs' value='<?php echo $this->getPcs(); ?>' />
+                </div>
+                <div class='estimate-button'>
+                    <button type="button" title="<?php echo $this->__('Get a Quote'); ?>" class="button" onclick="getShippingRates()">
+                        <span>
+                            <span><?php echo $this->__('Get a Quote'); ?></span>
+                        </span>
+                    </button>
+                </div>
+                <div id='estimate_items'>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+var empty_pcs_value = '<?php echo $this->jsQuoteEscape($this->__('Enter Postcode or Suburb')); ?>';
+var shipping_estimator_url = '<?php echo $this->getUrl('etemando/pcs/product', array('_secure' => Mage::app()->getStore()->isCurrentlySecure())); ?>';
+
+Event.observe(window, 'load', function() {
+    if ($('pcs')) {
+        Event.observe('pcs', 'blur', pcsBlur);
+        Event.observe('pcs', 'focus', pcsFocus);
+        pcsBlur();
+        new Autocomplete('pcs', {
+            serviceUrl: "<?php echo $this->getUrl('etemando/pcs/autocompletecart', array('_secure' => Mage::app()->getStore()->isCurrentlySecure())); ?>",
+            onSelect: function(value, data) {
+                $('city').value = data[0].city;
+                $('postcode').value = data[0].postcode;
+                $('region_id').value = data[0].region_id;
+//                getShippingRates();
+            },
+            onLoadStart: function() {
+                $('city').value = '';
+                $('postcode').value = '';
+                $('region_id').value = '';
+                $('estimate_field').addClassName('active');
+            },
+            onLoadComplete: function() {
+                $('estimate_field').removeClassName('active');
+            },
+            onAway: function() {
+                if (!$('city').value) {
+                    $('pcs').value = '';
+                    pcsBlur();
+                }
+            }
+        });
+    }
+});
+//]]>
+</script>
+<?php endif; ?>

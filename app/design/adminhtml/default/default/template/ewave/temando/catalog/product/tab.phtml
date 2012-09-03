@@ -1,0 +1,131 @@
+<?php
+/* @var $this Ewave_Temando_Block_Adminhtml_Catalog_Product_Tab */
+
+$product = $this->getProduct();
+$packaging = Mage::getModel('temando/system_config_source_shipment_packaging')->getOptions(false);
+unset($packaging[Ewave_Temando_Model_System_Config_Source_Shipment_Packaging::USE_DEFAULT]);
+
+?>
+<?php if(Mage::helper('temando')->isVersion2()): ?>
+    <div class="entry-edit">
+	<div class="entry-edit-head">
+	    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('temando')->__('Temando Packaging') ?></h4>
+	</div>
+	<fieldset>
+	    <table cellspacing="0" class="form-list" id="table_temandopackaging">
+		<tr>
+		    <td class="label"><label for="product[temando_packaging_mode]"><?php echo Mage::helper('temando')->__('Packaging Mode') ?></label></td>
+		    <td class="value">
+			<select id="product[temando_packaging_mode]" name="product[temando_packaging_mode]" class="select">
+			    <option value="0" <?php if($product->getTemandoPackagingMode() == 0) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('Use Defaults') ?></option>
+			    <option value="1" <?php if($product->getTemandoPackagingMode() == 1) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('As Defined') ?></option>
+			</select>
+		    </td>
+		</tr>
+	    </table>
+	</fieldset>
+    </div>
+    <div class="entry-edit" id="product-packages">
+	<?php for($i = 1; $i <= 5; $i++): ?>
+	<?php $isActive = $product->getData("temando_package_{$i}_description"); ?>
+	<div id="package_<?php echo $i ?>" <?php echo $this->getDisplayPackageHtml($i) ?>>
+	<div class="entry-edit-head">
+	    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('temando')->__("Package Details") ?></h4>
+	    <div class="form-buttons">
+	    <?php if($i < 5): ?>
+		<button id="add_package[<?php echo $i; ?>]" class="scalable add" onclick="add_package(<?php echo $i+1?>);" type="button" title="Add Package">Add Package</button>
+	    <?php endif; ?>
+	    <?php if($i > 1): ?>
+		<button id="remove_package[<?php echo $i; ?>]" class="scalable add" onclick="remove_package(<?php echo $i?>);" type="button" title="Remove Package">Remove</button>
+	    <?php endif; ?>
+	    </div>
+	</div>
+	<fieldset>	
+	    <table cellspacing="0" class="form-list" id="table_packages">
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_description]"><?php echo Mage::helper('temando')->__('Description') ?><span class="required"> *</span></label></td>
+		    <td class="value"><input class="input-text <?php if($isActive) echo 'required-entry'?>" type="text" id="product[temando_package_<?php echo $i?>_description]" name="product[temando_package_<?php echo $i?>_description]" value="<?php echo $product->getData("temando_package_{$i}_description") ?>" /></td>	
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_type]"><?php echo Mage::helper('temando')->__('Package Type') ?></label></td>
+		    <td class="value">
+			<select id="product[temando_package_<?php echo $i?>_type]" name="product[temando_package_<?php echo $i?>_type]" class="select">
+			    <?php foreach($packaging as $value => $label): ?>
+			    <option value="<?php echo $value; ?>" <?php if($value == $product->getData("temando_package_{$i}_type")) echo "selected='selected'" ?>><?php echo Mage::helper('temando')->__($label) ?></option>
+			    <?php endforeach; ?>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_fragile]"><?php echo Mage::helper('temando')->__('Fragile') ?></label></td>
+		    <td class="value">
+			<select id="product[temando_package_<?php echo $i?>_fragile]" name="product[temando_package_<?php echo $i?>_fragile]" class="select">
+			    <option value="0" <?php if($product->getData("temando_package_{$i}_fragile") == 0) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('No') ?></option>
+			    <option value="1" <?php if($product->getData("temando_package_{$i}_fragile") == 1) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('Yes') ?></option>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_weight]"><?php echo Mage::helper('temando')->__('Weight') ?><span class="required"> *</span></label></td>
+		    <td class="value"><input class="input-text <?php if($isActive) echo 'required-entry validate-number'?>" type="text" id="product[temando_package_<?php echo $i?>_weight]" name="product[temando_package_<?php echo $i?>_weight]" value="<?php echo $product->getData("temando_package_{$i}_weight") ?>" /></td>	
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_length]"><?php echo Mage::helper('temando')->__('Length') ?><span class="required"> *</span></label></td>
+		    <td class="value"><input class="input-text <?php if($isActive) echo 'required-entry validate-number'?>" type="text" id="product[temando_package_<?php echo $i?>_length]" name="product[temando_package_<?php echo $i?>_length]" value="<?php echo $product->getData("temando_package_{$i}_length") ?>" /></td>	
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_width]"><?php echo Mage::helper('temando')->__('Width') ?><span class="required"> *</span></label></td>
+		    <td class="value"><input class="input-text <?php if($isActive) echo 'required-entry validate-number'?>" type="text" id="product[temando_package_<?php echo $i?>_width]" name="product[temando_package_<?php echo $i?>_width]" value="<?php echo $product->getData("temando_package_{$i}_width") ?>" /></td>	
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_package_<?php echo $i?>_height]"><?php echo Mage::helper('temando')->__('Height') ?><span class="required"> *</span></label></td>
+		    <td class="value"><input class="input-text <?php if($isActive) echo 'required-entry validate-number'?>" type="text" id="product[temando_package_<?php echo $i?>_height]" name="product[temando_package_<?php echo $i?>_height]" value="<?php echo $product->getData("temando_package_{$i}_height")?>" /></td>	
+		</tr>	    
+	    </table>
+	</fieldset>
+	</div>
+	<?php endfor;?>
+    </div>
+<?php else: ?>
+<div class="entry-edit">
+	<div class="entry-edit-head">
+	    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('temando')->__('Temando Packaging') ?></h4>
+	</div>
+	<fieldset>
+	    <table cellspacing="0" class="form-list" id="table_temandopackaging">
+		<tr>
+		    <td class="label"><label for="product[temando_packaging]"><?php echo Mage::helper('temando')->__('Packaging') ?></label></td>
+		    <td class="value">
+			<select id="product[temando_packaging]" name="product[temando_packaging]" class="select">
+			    <?php foreach($this->getTemandoPackaging() as $value => $label): ?>
+			    <option value="<?php echo $value ?>" <?php if($product->getData("temando_packaging") == $value) { echo "selected='selected'"; } ?>><?php echo $label ?></option> 
+			    <?php endforeach;?>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_fragile]"><?php echo Mage::helper('temando')->__('Fragile') ?></label></td>
+		    <td class="value">
+			<select id="product[temando_fragile]" name="product[temando_fragile]" class="select">
+			    <option value="0" <?php if($product->getData("temando_fragile") == 0) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('No') ?></option>
+			    <option value="1" <?php if($product->getData("temando_fragile") == 1) { echo "selected='selected'"; } ?>><?php echo Mage::helper('temando')->__('Yes') ?></option>
+			</select>
+		    </td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_length]"><?php echo Mage::helper('temando')->__('Length') ?></label></td>
+		    <td class="value"><input class="input-text validate-number" type="text" id="product[temando_length]" name="product[temando_length]" value="<?php echo $product->getData("temando_length") ?>" /></td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_width]"><?php echo Mage::helper('temando')->__('Width') ?></label></td>
+		    <td class="value"><input class="input-text validate-number" type="text" id="product[temando_width]" name="product[temando_width]" value="<?php echo $product->getData("temando_width") ?>" /></td>
+		</tr>
+		<tr>
+		    <td class="label"><label for="product[temando_height]"><?php echo Mage::helper('temando')->__('Height') ?></label></td>
+		    <td class="value"><input class="input-text validate-number" type="text" id="product[temando_height]" name="product[temando_height]" value="<?php echo $product->getData("temando_height") ?>" /></td>
+		</tr>
+	    </table>
+	</fieldset>
+    </div>
+<?php endif; ?>
+

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <temando translate="title" module="temando">
+            <title>Temando</title>
+            <sort_order>71</sort_order>
+            <children>
+                <shipment translate="title" module="temando">
+                    <title>Manage Shipments</title>
+                    <sort_order>10</sort_order>
+                    <action>temando/adminhtml_shipment</action>
+                </shipment>
+                <manifest translate="title" module="temando">
+                    <title>Manage Manifests</title>
+                    <sort_order>20</sort_order>
+                    <action>temando/adminhtml_manifest</action>
+                </manifest>
+		<locations translate="title" module="temando">
+		    <title>Locations</title>
+		    <sort_order>30</sort_order>
+		    <children>
+			<warehouse translate="title" module="temando">
+			    <title>Manage Warehouses</title>
+			    <sort_order>10</sort_order>
+			    <action>temando/adminhtml_warehouse</action>
+			</warehouse>
+			<zone translate="title" module="temando">
+			    <title>Manage Zones</title>
+			    <sort_order>20</sort_order>
+			    <action>temando/adminhtml_zone</action>
+			</zone>
+		    </children>
+		</locations>
+		<rule translate="title" module="temando">
+                    <title>Rule Engine</title>
+                    <sort_order>40</sort_order>
+                    <action>temando/adminhtml_rule</action>
+                </rule>
+            </children>
+        </temando>
+    </menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <temando>
+                        <title>Temando</title>
+                        <sort_order>10</sort_order>
+                        <children>
+                            <shipment>
+                                <title>Manage Shipments</title>
+                            </shipment>
+                            <manifest>
+                                <title>Manage Manifests</title>
+                            </manifest>
+                            <locations>
+                                <title>Manage Locations</title>
+				<children>
+				    <warehouse>
+					<title>Manage Warehouses</title>
+				    </warehouse>
+				    <zone>
+					<title>Manage Zones</title>
+				    </zone>
+				</children>
+                            </locations>
+			    <rule>
+				<title>Rule Engine</title>
+			    </rule>
+                        </children>
+                    </temando>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <temando>
+                                        <title>Temando Settings</title>
+                                    </temando>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

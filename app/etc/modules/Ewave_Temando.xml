@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ewave_Temando>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Ewave_Temando>
+    </modules>
+</config>

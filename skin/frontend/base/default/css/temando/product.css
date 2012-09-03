@@ -1,0 +1,23 @@
+/* Product page */
+.block-shipping .block-title strong {
+    background-image: url("./images/i_shipping.gif");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 21px;
+}
+.estimate-form {
+    padding: 7px;
+}
+.estimate-form #pcs {
+    width: 150px;
+    padding: 4px;
+    padding-right: 26px;
+    /*border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 0 10px #EEEEEE inset;*/
+    background-color: transparent;
+}
+.estimate-form .estimate-button {
+    padding-top:5px;
+    width: 100%;
+    text-align: right;
+}

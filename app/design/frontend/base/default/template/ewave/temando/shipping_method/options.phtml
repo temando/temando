@@ -1,0 +1,213 @@
+<?php
+
+/* @var $this Ewave_Temando_Block_Onepage_Shipping_Method_Options */
+
+$_rates = $this->getShippingRates();
+$_quotes = $this->getQuotes();
+$_sole = $this->getSole();
+$_options = $this->getOptions();
+$show_free = false;
+$static_rates = array();
+$shipto = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
+/* @var $shipto Mage_Sales_Model_Quote_Address */
+?>
+
+<?php if ($_rates = $this->getShippingRates()): ?>
+    <dd>
+        <div class="no-display">
+            <?php foreach ($_rates as $_rate): ?>
+                <input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php if($_sole || $_rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio" onchange="return includingShipping('<?php echo $_rate->getCode();?>');"/>
+                <?php if ($_rate->getCode() === $this->getAddressShippingMethod()): ?>
+                    <script type="text/javascript">
+                        //<![CDATA[
+                            lastPrice = <?php echo (float)$_rate->getPrice(); ?>;
+                        //]]>
+                    </script>
+                <?php endif; ?>
+            <?php
+                if ($_rate->getCode() === 'temando_10000') {
+                    $show_free = $_rate;
+                }
+		
+		if ($_rate->getCode() === 'temando_hybrid') {
+		    $static_rates[] = $_rate;
+		}
+            ?>
+            <?php endforeach; ?>
+        </div>
+        <?php if ($show_free && count($_rates) > 1): ?>
+            <?php if ($this->helper('temando')->getConfigData('options/show_carrier_names')): ?>
+            <dt><?php echo $this->__('Free Shipping'); ?></dt>
+            <?php endif; ?>
+            <dl>
+                <ul>
+                    <li>
+                        <input name="temando_quotes" class="temando_free_ship" type="radio" value="<?php echo $show_free->getCode() ?>" id="temando_quote_10000"<?php if($_sole || $show_free->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio" onchange="return includingShipping('<?php echo $show_free->getCode();?>');"/>
+                            <label for="temando_quote_10000"><?php echo $this->__('Free Shipping');; ?>
+                        </label>
+                    </li>
+                </ul>
+            </dl>
+        <?php endif; ?>
+	<?php if (!empty($static_rates)): ?>
+            <?php if ($this->helper('temando')->getConfigData('options/show_carrier_names')): ?>
+            <dt><?php echo $this->__('Flat Rates'); ?></dt>
+            <?php endif; ?>
+	    <?php foreach($static_rates as $rate): ?>
+            <dl>
+                <ul>
+                    <li> <!-- PROCESS ALL INCLUDING DYNAMIC + GET OPTIONS -->
+                        <input name="temando_quotes" class="temando_free_ship" type="radio" value="<?php echo $rate->getCode()?>" id="temando_quote_hybrid"<?php if($_sole || $rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio" onchange="return includingShipping('<?php echo $rate->getCode();?>');"/>
+                            <label for="temando_quote_hybrid"><?php echo $this->__($rate->getMethodTitle()); ?>
+				<?php
+                                    $_excl = $this->getShippingPrice($rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax());
+                                    $_incl = $this->getShippingPrice($rate->getPrice(), true);
+                                    echo $_excl;
+                                ?>
+				<?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+				    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+				<?php endif; ?>
+                        </label>
+                    </li>
+                </ul>
+            </dl>
+	    <?php endforeach; ?>
+        <?php endif; ?>
+	<?php 
+	    //check if rule engine and get quotes by rules
+	    if(Mage::helper('temando')->getConfigData('pricing/method') === Ewave_Temando_Model_System_Config_Source_Pricing::RULE_ENGINE) {
+		$engine = Mage::getModel('temando/hybrid')->loadRules(
+			$shipto->getWeight(), 
+			$shipto->getSubtotal(), 
+			$shipto->getItemQty(),
+			$shipto->getPostcode()
+		);
+		
+		$_quotes = $engine->getDynamicQuotesByRule($_quotes);
+	    }
+	?>
+        <?php foreach ($_quotes as $_carrier_id => $_carrier): ?>
+            <?php if (($first_quote = reset($_carrier))): ?>
+                <dl>
+                    <?php if ($this->helper('temando')->getConfigData('options/show_carrier_names')): ?>
+                    <dt><?php echo $first_quote->getCarrier()->getCompanyName(); ?></dt>
+                    <?php endif; ?>
+                    <dd>
+                        <ul>
+                            <?php foreach ($_carrier as $_quote): ?>
+                                <?php foreach ($this->getPermutations($_quote) as $_permutation_id => $_permutation): ?>
+                                    <?php /* @var $_permutation Ewave_Temando_Model_Quote */ ?>
+                                    <?php $_rate = $this->getRateFromPermutation($_quote, $_permutation_id); 
+					  if(!$_rate) { continue; }
+				    ?>
+                                    <li>
+					<?php ($_permutation->getRuleId()) ? $ruleId = '_'.$_permutation->getRuleId() : $ruleId = ''; ?>
+                                        <?php if (!$_sole) : ?>
+                                            <?php
+                                                $_class = '';
+                                                $exploded = explode('_', $_permutation_id);
+                                                for ($i = 0; $i < count($exploded); $i += 2) {
+                                                    $_class .= $exploded[$i] . '_' . $exploded[$i+1] . ' ';
+                                                }
+                                            ?>
+					    <input name="temando_quotes" type="radio" value="<?php echo $_permutation->getId() . $ruleId . '_' . $_permutation_id; ?>" id="temando_quote_<?php echo $_quote->getId(). $ruleId . '_' . $_permutation_id; ?>"<?php if($_rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio <?php echo $_class; ?>" onchange="return includingShipping('<?php echo $_rate->getCode();?>');"/>
+                                        <?php endif; ?>
+					<label for="temando_quote_<?php echo $_permutation->getId(). $ruleId  . '_' . $_permutation_id; ?>">
+                                            <?php if ($this->helper('temando')->getConfigData('options/show_name_time')): ?>
+                                                <?php echo $_permutation->getDescription(false) ?>
+                                            <?php else: ?>
+                                                <?php echo $this->helper('temando')->getConfigData('options/shown_name') ?>
+                                            <?php endif; ?>
+                                            <?php
+                                                $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax());
+                                                $_incl = $this->getShippingPrice($_rate->getPrice(), true);
+                                                echo $_excl;
+                                            ?>
+                                            <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                                (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                                            <?php endif; ?>
+                                        </label>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </dd>
+                </dl>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <div id="temando_checkboxes">
+            <br />
+            <table class='insurance'>
+                <tr>
+            <?php foreach($_options as $_option_id => $_option): ?>
+                <?php /* @var $_option Ewave_Temando_Model_Option_Abstract */ ?>
+                <?php if ($_option instanceof Ewave_Temando_Model_Option_Boolean): ?>
+                    <?php if ($_option->getForcedValue() === Ewave_Temando_Model_Option_Boolean::NO): ?>
+                        <td class='c1' style="display: none;">
+                    <?php else : ?>
+                        <td class='c1'>
+                    <?php endif; ?>
+                        <input
+                            type="checkbox"
+                            <?php if ($_option->getForcedValue() !== Ewave_Temando_Model_Option_Boolean::NO): ?>
+                                checked="checked"
+                            <?php endif; ?>
+                            id="temando_checkbox_<?php echo $_option_id; ?>"
+                            <?php if ($_option->getForcedValue() === Ewave_Temando_Model_Option_Boolean::YES): ?>
+                                disabled="disabled"
+                            <?php endif; ?>
+                            class="checkbox"
+                        />
+                        <label for="temando_checkbox_<?php echo $_option_id; ?>">
+                            <?php echo $_option->getName(); ?>
+                        </label>
+                <?php endif; ?>
+                    </td>
+            <?php endforeach; ?>
+                </tr>
+                <tr>
+            <?php foreach($_options as $_option_id => $_option): ?>
+                <?php /* @var $_option Ewave_Temando_Model_Option_Abstract */ ?>
+                <?php if ($_option instanceof Ewave_Temando_Model_Option_Boolean): ?>
+                    <?php if ($_option->getForcedValue() === Ewave_Temando_Model_Option_Boolean::NO): ?>
+                        <td class='c2' style="display: none;">
+                    <?php else : ?>
+                        <td class='c2'>
+                    <?php endif; ?>
+                            <?php echo $_option->getDescription(); ?>
+                <?php endif; ?>
+                    </td>
+            <?php endforeach; ?>
+                </tr>
+            </table>
+        </div>
+        <script type="text/javascript">
+            //<![CDATA[
+                // Set up the event listeners for the radio buttons.
+                $$('input[type=radio][name=temando_quotes]').each(function (control) {
+                    Event.observe(control, 'click', function () {
+                        method_update(control);
+                    });
+                });
+
+                $$('input[type=radio][name=shipping_method]').each(function (control) {
+                    Event.observe(control, 'click', function () {
+                        temando_update(control);
+                    });
+                });
+
+                $$('#temando_checkboxes input[type=checkbox]').each(function (control) {
+                    Event.observe(control, 'click', function () {
+                        option_update(control);
+                    })
+                });
+                
+                // Set the current temando method
+                temando_update();
+
+                // Hide quotes that don't match the checked options
+                option_update();
+            //]]>
+        </script>
+    </dd>
+<?php endif; ?>

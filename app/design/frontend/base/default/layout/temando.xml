@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    
+    <default>
+        <reference name="head" >
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/temando/autocomplete.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/temando/custom.js</name>
+            </action>
+            <action method="addCss">
+                <stylesheet>css/temando/autocomplete.css</stylesheet>
+            </action>
+        </reference>
+    </default>
+    
+    <default>
+        <reference name="before_body_end">
+            <block type='core/template' name="pcs" template='ewave/temando/pcs.phtml' />
+        </reference>
+    </default>
+    
+    <etemando_pcs_autocomplete>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>ewave/temando/page/ajax.phtml</template>
+            </action>
+        </reference>
+        
+        <!--reference name="content">
+            <block name="ajax_responce" type="temando/pcs" template="ewave/temando/" />
+        </reference-->
+    </etemando_pcs_autocomplete>
+    
+    <checkout_onepage_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/temando/checkout.js</name>
+            </action>
+            <action method="addCss">
+                <stylesheet>css/temando/styles.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="checkout.onepage.shipping_method.available">
+            <block name="checkout.onepage.shipping_method.available" type="temando/onepage_shipping_method_available" template="ewave/temando/shipping_method/available.phtml">
+                <block name="checkout.onepage.shipping_method.available.options" as="options" type="temando/onepage_shipping_method_options" template="ewave/temando/shipping_method/options.phtml" />
+            </block>
+        </reference>
+        
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate">
+                <template>ewave/temando/checkout/onepage/billing.phtml</template>
+            </action>
+        </reference>
+        
+        <reference name="checkout.onepage.shipping">
+            <action method="setTemplate">
+                <template>ewave/temando/checkout/onepage/shipping.phtml</template>
+            </action>
+        </reference>
+        
+    </checkout_onepage_index>
+    
+    <checkout_onepage_shippingmethod>
+        <reference name="root">
+            <block name="root" type="temando/onepage_shipping_method_available" template="ewave/temando/shipping_method/available.phtml" >
+                <block name="checkout.onepage.shipping_method.available.options" as="options" type="temando/onepage_shipping_method_options" template="ewave/temando/shipping_method/options.phtml" />
+            </block>
+        </reference>
+    </checkout_onepage_shippingmethod>
+    
+    <checkout_cart_index>
+        <reference name="checkout.cart.shipping">
+            <action method="setTemplate" ifconfig='carriers/temando/active'>
+                <template>ewave/temando/checkout/cart/shipping.phtml</template>
+            </action>
+        </reference>
+
+    </checkout_cart_index>
+
+    <catalog_product_view>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/temando/product.js</name>
+            </action>
+            <action method="addCss">
+                <stylesheet>css/temando/product.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="right">
+            <block type="temando/product_shipping" name="temando.product.shipping" before="-" template="ewave/temando/product/shipping.phtml"/>
+        </reference>
+    </catalog_product_view>
+
+    <etemando_pcs_product>
+        <reference name="root">
+            <block type="temando/product_shipping_methods" name="root" template="ewave/temando/product/shipping/methods.phtml"/>
+        </reference>
+    </etemando_pcs_product>
+
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/temando/checkout.js</name>
+            </action>
+            <action method="addCss">
+                <stylesheet>css/temando/styles.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="choose-shipping-method">
+            <block name="choose-shipping-method" type="temando/onepage_shipping_method_available" template="ewave/temando/onestep/shipping_method.phtml">
+                <block name="checkout.onepage.shipping_method.available.options" as="options" type="temando/onepage_shipping_method_options" template="ewave/temando/onestep/options.phtml" />
+            </block>
+        </reference>
+    </onestepcheckout_index_index>
+
+    <onestepcheckout_ajax_save_billing>
+        <reference name="choose-shipping-method">
+            <block name="choose-shipping-method" type="temando/onepage_shipping_method_available" template="ewave/temando/onestep/shipping_method.phtml">
+                <block name="checkout.onepage.shipping_method.available.options" as="options" type="temando/onepage_shipping_method_options" template="ewave/temando/onestep/options.phtml" />
+            </block>
+        </reference>
+    </onestepcheckout_ajax_save_billing>
+    
+    <customer_address_form>
+        <reference name="my.account.wrapper">
+            <block type="customer/address_edit" name="customer_address_edit" template="ewave/temando/customer/address/edit.phtml"/>
+        </reference>
+    </customer_address_form>
+   
+</layout>

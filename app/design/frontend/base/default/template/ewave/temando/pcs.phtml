@@ -1,0 +1,23 @@
+<script type="text/javascript">
+
+<?php if (Mage::getStoreConfig('carriers/temando/active')): ?>
+new CheckoutAutocomplete({
+        url: "<?php echo $this->getUrl('etemando/pcs/autocompletecart', array('_secure' => Mage::app()->getStore()->isCurrentlySecure())); ?>",
+        postcode: 'billing:postcode',
+        city: 'billing:city',
+        state: 'billing:region_id',
+        country: 'billing:country_id' 
+    
+});
+
+new CheckoutAutocomplete({
+        url: "<?php echo $this->getUrl('etemando/pcs/autocompletecart', array('_secure' => Mage::app()->getStore()->isCurrentlySecure())); ?>",
+        postcode: 'shipping:postcode',
+        city: 'shipping:city',
+        state: 'shipping:region_id',
+        country: 'shipping:country_id' 
+    
+});
+<?php endif;?>
+
+</script>
