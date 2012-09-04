@@ -20,7 +20,7 @@ class Ewave_Temando_Model_System_Config_Source_Shipment_Packaging extends Ewave_
     protected function _setupOptions()
     {
         $this->_options = array(
-	    self::USE_DEFAULT	    => 'Use Default',
+	    //self::USE_DEFAULT	    => 'Use Default',
             self::BOX               => 'Box',
             self::CARTON            => 'Carton',
             self::CRATE             => 'Crate',
