@@ -129,6 +129,7 @@ class Ewave_Temando_Model_Observer
 		$part = round($item->getRowTotalInclTax() / count($packages), 2);
 		$sub = 0.00; $i=0;
 		foreach($packages as $package) {
+			$i++;
 		    $box = Mage::getModel('temando/box');
 		    $box
 		        ->setShipmentId($temando_shipment->getId())
