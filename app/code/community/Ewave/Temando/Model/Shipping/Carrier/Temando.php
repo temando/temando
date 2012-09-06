@@ -303,8 +303,8 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 		    }
 		    $items = $data['qty'];
 		} else {
-		    $subtotal = $rate_request->getOrderSubtotal(); 
-		    $items = $rate_request->getOrderTotalQty();
+		    $subtotal = $rate_request->getOrderSubtotal() ? $rate_request->getOrderSubtotal() : $rate_request->getPackageValue(); 
+		    $items = $rate_request->getOrderTotalQty() ? $rate_request->getOrderTotalQty() : $rate_request->getPackageQty();
 		}
 		
 		

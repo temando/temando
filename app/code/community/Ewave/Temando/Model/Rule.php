@@ -89,6 +89,8 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
     
     protected function _validateCondition($condition, $value)
     {
+	if(is_null($value)) return true; //this should not happen but just in case
+	
 	$return = false;
 	if(isset($this->_conditions[$condition])) {
 	    foreach($this->_conditions[$condition] as $cond)
