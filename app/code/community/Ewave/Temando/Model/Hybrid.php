@@ -143,7 +143,7 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 		    $permutations = $options->applyAll($ruleQuote);
 		    
 		    foreach ($permutations as $permutation_id => $permutation) {
-			$title = $this->getConfigData('options/shown_name');
+			$title = $this->_helper->getConfigData('options/shown_name');
 			if ($this->_helper->getConfigData('options/show_name_time')) {
 			    $title = $permutation->getDescription($this->_helper->getConfigData('options/show_carrier_names'));
 			}
