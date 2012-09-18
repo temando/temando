@@ -447,8 +447,15 @@ class Ewave_Temando_Adminhtml_ShipmentController extends Mage_Adminhtml_Controll
 	}
 
 	$request_array = $request->toRequestArray();
+	
+	if (Mage::helper('temando')->isVersion2()) {
+	    $originDesc = $origin->getName();
+	} else {
+	    $originDesc = 'Default Warehouse';
+	}
 
 	$request_array['origin'] = array(
+	    'description' => $originDesc,
 	    'contactName' => $origin->getContactName(),
 	    'companyName' => $origin->getCompanyName(),
 	    'street' => $origin->getStreet(),
