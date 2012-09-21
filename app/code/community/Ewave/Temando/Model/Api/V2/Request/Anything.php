@@ -83,7 +83,7 @@ class Ewave_Temando_Model_Api_V2_Request_Anything extends Mage_Core_Model_Abstra
             );
 
             if ($this->_item->getWeight() < 1) {
-                $any_thing['weight'] = Mage::helper('temando/v2')->getGramsWeight($anything);
+                $any_thing['weight'] = Mage::helper('temando/v2')->getGramsWeight($any_thing);
                 $any_thing['weightMeasurementType'] = Ewave_Temando_Model_System_Config_Source_Unit_Weight::GRAMS;
             }
 	    
