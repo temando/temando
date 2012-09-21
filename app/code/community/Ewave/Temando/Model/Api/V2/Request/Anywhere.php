@@ -26,13 +26,8 @@ class Ewave_Temando_Model_Api_V2_Request_Anywhere extends Mage_Core_Model_Abstra
             'destinationBusLimitedAccess' => 'N',
             'originBusNotifyBefore' => 'Y',
             'originBusLimitedAccess' => 'N',
+	    'originDescription' => $this->getOriginName()
         );
-
-	$data['originCountry'] = $this->getOriginCountry();
-	$data['originCode'] = $this->getOriginPostcode();
-	$data['originSuburb'] = $this->getOriginCity();
-	$data['originIs'] = $this->getOriginType();
-
 
         if (Mage::helper('temando/v2')->isStreetWithPO($this->getDestinationStreet())) {
             $data['destinationResPostalBox'] = 'Y';

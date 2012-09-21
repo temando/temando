@@ -70,6 +70,7 @@ class Ewave_Temando_Adminhtml_WarehouseController extends Mage_Adminhtml_Control
 		    $model->setId($id);
 		}
 		$model->save();
+		/* @var $model Ewave_Temando_Model_Warehouse */
 		
 		//update warehouse quantities if any changes
 		if(is_array($products)) {
@@ -81,48 +82,28 @@ class Ewave_Temando_Adminhtml_WarehouseController extends Mage_Adminhtml_Control
 		    Mage::throwException(Mage::helper('temando')->__('Error saving warehouse'));
 		}
 
-//		//sync with temando.com
-//		$request = array(
-//		    'description' => '',
-//		    'type' => 'Origin',
-//		    'contactName' => '',
-//		    'companyName' => '',
-//		    'street' => '',
-//		    'suburb' => '',
-//		    'state' => '',
-//		    'country' => '',
-//		    'phone1' => '',
-//		    'phone2' => '',
-//		    'fax' => '',
-//		    'email' => '',
-//		    'loadingFacilities' => '',
-//		    'forklift' => '',
-//		    'dock' => '',
-//		    'limitedAccess' => '',
-//		    'postalBox' => '',
-//		    
-//		);
-//		
-//		try {
-//		    $api = Mage::getModel('temando/api_client');
-//		    $api->connect(
-//			Mage::helper('temando')->getConfigData('general/username'),
-//			Mage::helper('temando')->getConfigData('general/password'),
-//			Mage::helper('temando')->getConfigData('general/sandbox'),
-//			true);
-//		    $result = $api->getLocations(array('type' => 'Origin', 'description' => $model->getName()));
-//		    if($result && isset($result->locations->location)) {
-//			//location exist = update
-//			$api->updateLocation($request);
-//		    }
-//		} catch (Exception $e) {
-//		    try {
-//			$result = $api->createLocation($request);
-//		    } catch(Exception $e) {
-//			//cannot create location
-//		    }
-//		}
-
+		//sync with temando.com
+		$request['location'] = $model->toCreateLocationRequestArray();		
+		try {
+		    $api = Mage::getModel('temando/api_v2_client');
+		    $api->connect(
+			Mage::helper('temando')->getConfigData('general/username'),
+			Mage::helper('temando')->getConfigData('general/password'),
+			Mage::helper('temando')->getConfigData('general/sandbox'));
+		    $result = $api->getLocations(array('type' => 'Origin', 'clientId' => Mage::helper('temando')->getClientId(), 'description' => $model->getName()));
+		    if($result && isset($result->locations->location)) {
+			//location exists = update
+			$api->updateLocation($request);
+		    }
+		} catch (Exception $e) {
+		    try {
+			$result = $api->createLocation($request);
+		    } catch(Exception $e) {
+			//cannot create location
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('temando')->__('An error occured when synchronizing with temando.com'));
+		    }
+		}
+		
 		Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('temando')->__('Warehouse was successfully saved.'));
 		Mage::getSingleton('adminhtml/session')->setFormData(false);
 

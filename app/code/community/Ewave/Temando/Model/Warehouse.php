@@ -13,6 +13,13 @@ class Ewave_Temando_Model_Warehouse extends Mage_Core_Model_Abstract {
 		$this->getCity() . ', ' . $this->getCountry() . ')';
     }
     
+    /**
+     * Returns true if warehouse serves given postal code,
+     * false otherwise
+     * 
+     * @param string|int $postcode
+     * @return boolean 
+     */
     public function servesArea($postcode) {
 	$zones = explode(',', $this->getZoneIds());
 	
@@ -35,6 +42,35 @@ class Ewave_Temando_Model_Warehouse extends Mage_Core_Model_Abstract {
 	}
 	
 	return false;
+    }
+    
+    /**
+     * Returns request array used to create location via API
+     * 
+     * @return array
+     */
+    public function toCreateLocationRequestArray()
+    {
+	return array(
+	    'description' => $this->getName(),
+	    'type' => 'Origin',
+	    'contactName' => $this->getContactName(),
+	    'companyName' => $this->getCompanyName(),
+	    'street' => $this->getStreet(),
+	    'suburb' => $this->getCity(),
+	    'state' => $this->getRegion(),
+	    'code' => $this->getPostcode(),
+	    'country' => $this->getCountry(),
+	    'phone1' => $this->getData('contact_phone_1'),
+	    'phone2' => $this->getData('contact_phone_2'),
+	    'fax' => $this->getContactFax(),
+	    'email' => $this->getContactEmail(),
+	    'loadingFacilities' => 'N',
+	    'forklift' => 'N',
+	    'dock' => 'N',
+	    'limitedAccess' => 'N',
+	    'postalBox' => 'N',
+	);
     }
     
 }

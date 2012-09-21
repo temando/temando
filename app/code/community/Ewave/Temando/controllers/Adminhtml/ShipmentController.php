@@ -106,13 +106,11 @@ class Ewave_Temando_Adminhtml_ShipmentController extends Mage_Adminhtml_Controll
 		    }
 		}
 
-		$shipment
-			->clearQuotes()
-			->save();
+		$shipment->clearQuotes()->save();
 
 		$shipment = Mage::getModel('temando/shipment')->load($shipment->getId());
 
-		if (/* $shipment->getReadyDate() && $shipment->getReadyTime() && */ $shipment->getBoxes()) {
+		if ($shipment->getBoxes()) {
 		    $shipment->fetchQuotes(
 			    Mage::helper('temando')->getConfigData('general/username'), Mage::helper('temando')->getConfigData('general/password'), Mage::helper('temando')->getConfigData('general/sandbox')
 		    );
@@ -426,17 +424,22 @@ class Ewave_Temando_Adminhtml_ShipmentController extends Mage_Adminhtml_Controll
 		    ->setEmail($origin->getContactEmail())
 		    ->setFax($origin->getContactFax());
 
-	    //Mage::log($origin->getData(), null, 'origin-data.log', true);
+	    $desc = $origin->getName();
 	} else {
 	    $request = Mage::getModel('temando/api_request');
 	    $origin = Mage::helper('temando')->getOrigin();
+	    $desc = Ewave_Temando_Helper_Data::DEFAULT_WAREHOUSE_NAME;
 	}
 
 	/* @var $request Ewave_Temando_Model_Api_Request */
 	$request
 		->setMagentoQuoteId($shipment->getOrder()->getQuoteId())
 		->setOrigin(
-			$origin->getCountry(), $origin->getPostcode(), $origin->getCity(), $origin->getType() ? $origin->getType() : $origin->getLocationType())
+			$origin->getCountry(), 
+			$origin->getPostcode(), 
+			$origin->getCity(), 
+			$origin->getType() ? $origin->getType() : $origin->getLocationType(),
+			$desc)
 		->setDestination(
 			$shipment->getDestinationCountry(), $shipment->getDestinationPostcode(), $shipment->getDestinationCity(), $shipment->getDestinationStreet())
 		->setItems($shipment->getBoxes()->getItems());

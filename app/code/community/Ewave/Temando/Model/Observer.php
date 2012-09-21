@@ -205,8 +205,10 @@ class Ewave_Temando_Model_Observer
 	if(Mage::helper('temando')->isVersion2()) {
 	    $request = Mage::getModel('temando/api_v2_request');
 	    $origin = Mage::helper('temando/v2')->getDynamicOrigin($order->getShippingAddress()->getPostcode(), $order->getStoreId());
+	    $desc = $origin->getName();
 	} else {
 	    $request = Mage::getModel('temando/api_request');
+	    $desc = Ewave_Temando_Helper_Data::DEFAULT_WAREHOUSE_NAME;
 	}
         /* @var $request Ewave_Temando_Model_Api_Request */
         $request
@@ -218,7 +220,8 @@ class Ewave_Temando_Model_Observer
                 $origin->getCountry(),
                 $origin->getPostcode(),
                 $origin->getCity(),
-                $origin->getType() ? $origin->getType() : $origin->getLocationType())
+                $origin->getType() ? $origin->getType() : $origin->getLocationType(),
+		$desc)
             ->setDestination(
                 $order->getShippingAddress()->getCountry(),
                 $order->getShippingAddress()->getPostcode(),

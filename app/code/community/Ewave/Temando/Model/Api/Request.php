@@ -58,13 +58,14 @@ class Ewave_Temando_Model_Api_Request extends Mage_Core_Model_Abstract
         return $this;
     }
     
-    public function setOrigin($country, $postcode, $city, $type)
+    public function setOrigin($country, $postcode, $city, $type, $desc = Ewave_Temando_Helper_Data::DEFAULT_WAREHOUSE_NAME)
     {
         $this->_anywhere
             ->setOriginCountry($country)
             ->setOriginPostcode($postcode)
             ->setOriginCity($city)
-            ->setOriginType($type);
+            ->setOriginType($type)
+	    ->setOriginName($desc);
         return $this;
     }
 

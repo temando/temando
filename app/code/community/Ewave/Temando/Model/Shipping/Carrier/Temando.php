@@ -253,9 +253,11 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 		    if(!$this->_origin) {
 			throw new Exception('Missing mandatory origin data.');
 		    }
+		    $desc = $this->_origin->getName();
 		} else {
 		    $request = Mage::getModel('temando/api_request');
 		    $this->_origin = Mage::helper('temando')->getOrigin();
+		    $desc = Ewave_Temando_Helper_Data::DEFAULT_WAREHOUSE_NAME;
 		}
 		
                 $request
@@ -267,7 +269,8 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
                         $this->_origin->getCountry(),
                         $this->_origin->getPostcode(),
                         $this->_origin->getCity(),
-                        $this->_origin->getType() ? $this->_origin->getType() : $this->_origin->getLocationType())
+                        $this->_origin->getType() ? $this->_origin->getType() : $this->_origin->getLocationType(),
+			$desc)
                     ->setDestination(
                         $rate_request->getDestCountryId(),
                         $rate_request->getDestPostcode(),
