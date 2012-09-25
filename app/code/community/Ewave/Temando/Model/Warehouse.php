@@ -3,11 +3,26 @@
 
 class Ewave_Temando_Model_Warehouse extends Mage_Core_Model_Abstract {
     
+    
+    /**
+     * User IDs of all users allowed to view this warehouse data
+     * 
+     * @var array 
+     */
+    protected $_allowedUsers = null;
+    
+    
     public function _construct() {
 	parent::_construct();
 	$this->_init('temando/warehouse');
     }
     
+    
+    /**
+     * Returns warehouse title (combined name + address)
+     * 
+     * @return string 
+     */
     public function getTitle() {
 	return $this->getName() . ' (' . $this->getStreet() . ', ' . 
 		$this->getCity() . ', ' . $this->getCountry() . ')';
@@ -41,6 +56,56 @@ class Ewave_Temando_Model_Warehouse extends Mage_Core_Model_Abstract {
 	    }
 	}
 	
+	return false;
+    }
+    
+    /**
+     * Load allowed users for this warehouse
+     * 
+     * @return \Ewave_Temando_Model_Warehouse 
+     */
+    protected function _loadUsers()
+    {
+	$users = unserialize($this->getWhsUsers());
+	if(is_array($users) && !empty($users))
+	{
+	    $this->_allowedUsers = array_keys($users);
+	}
+	
+	if(!is_array($this->_allowedUsers))
+	    $this->_allowedUsers = array();
+	 
+	return $this;
+	
+    }
+    
+    /**
+     * Returns user ids allowed to view warehouse data
+     * 
+     * @return array 
+     */
+    public function getAllowedUsers()
+    {
+	if(!is_array($this->_allowedUsers)) {
+	    $this->_loadUsers();
+	}
+	
+	return $this->_allowedUsers;
+    }
+    
+    /**
+     * Returns true if user is allowed to view this warehouse data,
+     * false otherwise
+     * 
+     * @param int $id
+     * @return boolean 
+     */
+    public function isAllowedUser($id)
+    {
+	$allowed = $this->getAllowedUsers();
+	if(in_array($id, $allowed)) {
+	    return true;
+	}
 	return false;
     }
     

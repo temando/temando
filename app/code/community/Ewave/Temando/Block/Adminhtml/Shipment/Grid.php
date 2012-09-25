@@ -25,8 +25,30 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 	    $collection->addFieldToFilter('`sales/order`.status', array('nin' => $status_arr));
 	}
 	
+	//per user/warehouse view if Temando 2.0 active
+	if(Mage::helper('temando')->isVersion2()) {
+	    $currentUser = Mage::getSingleton('admin/session')->getUser();
+	    $allowedWarehouses = Mage::getModel('temando/warehouse')->getCollection()
+				    ->getAllowedWarehouseIds($currentUser->getId());
+	    $collection->addFieldToFilter('warehouse_id', array('in' => $allowedWarehouses));
+	}
+	
         $this->setCollection($collection);
         return parent::_prepareCollection();
+    }
+
+    protected function _addColumnFilterToCollection($column) {
+	if($column->getId() == 'warehouse_id') {
+	    $val = $column->getFilter()->getValue();
+	    if($val) {
+		$col = Mage::getModel('temando/warehouse')->getCollection()
+			    ->addFieldToFilter('name', array('like' => '%'.$val.'%'));
+		$this->getCollection()->addFieldToFilter('warehouse_id', array('in' => $col->getAllIds()));
+	    }
+	} else {
+	    parent::_addColumnFilterToCollection($column);
+	}
+	return $this;
     }
 
     protected function _prepareColumns()
@@ -82,6 +104,15 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
             'index' => 'customer_selected_quote_description',
         ));
 
+	if(Mage::helper('temando')->isVersion2()) {
+	    $this->addColumn('warehouse_id', array(
+		'header' => Mage::helper('temando')->__('Origin'),
+		'align'  => 'left',
+		'index'  => 'warehouse_id',
+		'renderer'  => new Ewave_Temando_Block_Adminhtml_Shipment_Grid_Renderer_Origin,
+	    ));
+	}
+
         $this->addColumn('action', array(
             'header' => Mage::helper('temando')->__('Action'),
             'width' => '100',
@@ -109,11 +140,13 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 	$this->getMassactionBlock()->addItem('book_all', array(
              'label'=> Mage::helper('temando')->__('Book Selected Shipments'),
              'url'  => $this->getUrl('*/*/massBook'),
+	     'confirm' => Mage::helper('temando')->__('Are you sure?'),
         ));
 	
 	$this->getMassactionBlock()->addItem('remove_all', array(
              'label'=> Mage::helper('temando')->__('Remove Selected Shipments'),
              'url'  => $this->getUrl('*/*/massRemove'),
+	     'confirm' => Mage::helper('temando')->__('Are you sure?'),
         ));
 	
 	$this->setMassactionIdField('id');	

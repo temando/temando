@@ -24,7 +24,7 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 
     public function load($id, $field = null) {
 	parent::load($id, $field);
-	$this->_prepareConditions();
+	return $this->_prepareConditions();
     }
     
     /**

@@ -36,5 +36,25 @@ class Ewave_Temando_Model_Mysql4_Warehouse_Collection extends Mage_Core_Model_My
 	
     }
     
+    /**
+     * Returns warehouse ids which this user is allowed to view
+     * 
+     * @param string|int $userId
+     * @return array 
+     */
+    public function getAllowedWarehouseIds($userId)
+    {
+	$this->load();
+	
+	$allowed = array();
+	foreach($this->_items as $warehouse) {
+	    /* @var $warehouse Ewave_Temando_Model_Warehouse */
+	    if($warehouse->isAllowedUser($userId))
+		$allowed[] = $warehouse->getId();
+	}
+
+	return $allowed;
+    }
+    
 }
 

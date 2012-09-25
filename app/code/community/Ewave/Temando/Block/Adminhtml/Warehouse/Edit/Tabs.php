@@ -16,6 +16,12 @@ class Ewave_Temando_Block_Adminhtml_Warehouse_Edit_Tabs extends Mage_Adminhtml_B
 	    'class' => 'ajax',
 	));
 
+	$this->addTab('users', array(
+	    'label' => Mage::helper('temando')->__('Related Users'),
+	    'url' => $this->getUrl('*/*/users', array('_current' => true)),
+	    'class' => 'ajax',
+	));
+
 	return parent::_beforeToHtml();
     }
 

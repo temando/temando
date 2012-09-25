@@ -80,6 +80,31 @@ class Ewave_Temando_Block_Adminhtml_Rule_Grid extends Mage_Adminhtml_Block_Widge
         return parent::_prepareColumns();
     }    
 
+    protected function _prepareMassaction() {
+	parent::_prepareMassaction();
+	
+	$this->getMassactionBlock()->addItem('deactivate_all', array(
+            'label'=> Mage::helper('temando')->__('Deactivate Rules'),
+            'url'  => $this->getUrl('*/*/massDeactivate'),
+        ));
+	
+	$this->getMassactionBlock()->addItem('activate_all', array(
+            'label'=> Mage::helper('temando')->__('Activate Rules'),
+            'url'  => $this->getUrl('*/*/massActivate'),
+        ));
+	
+	$this->getMassactionBlock()->addItem('remove_all', array(
+            'label'=> Mage::helper('temando')->__('Delete Rules'),
+            'url'  => $this->getUrl('*/*/massRemove'),
+	    'confirm' => Mage::helper('temando')->__('Are you sure you want to delete selected rules?'),
+        ));
+	
+	$this->setMassactionIdField('id');	
+	$this->getMassactionBlock()->setUseSelectAll(false);
+
+        return $this;
+    }    
+
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', array('id' => $row->getId()));

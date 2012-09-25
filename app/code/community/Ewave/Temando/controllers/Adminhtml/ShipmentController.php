@@ -16,9 +16,19 @@ class Ewave_Temando_Adminhtml_ShipmentController extends Mage_Adminhtml_Controll
 
 	if ($shipment->getId()) {
 	    $notices = array();
-	    /* if (!$shipment->getReadyDate() || !$shipment->getReadyTime()) {
-	      $notices[] = 'Quotes cannot be refreshed until a pick-up date and time have been specified.';
-	      } */
+	    
+	    //check permissions user/warehouse if Temando 2.0 active
+	    if(Mage::helper('temando')->isVersion2()) {
+		$currentUser = Mage::getSingleton('admin/session')->getUser();
+		$allowedWarehouses = Mage::getModel('temando/warehouse')->getCollection()
+					->getAllowedWarehouseIds($currentUser->getId());
+		if(!in_array($shipment->getWarehouseId(), $allowedWarehouses)) {
+		    $this->_getSession()->addError('You are not allowed to edit this shipment.');
+		    $this->_redirect('*/*/');
+		    return;
+		}
+	    }
+	    
 	    if (!count($shipment->getBoxes())) {
 		$notices[] = 'Quotes cannot be refreshed until at least one box is added to the shipment.';
 	    }

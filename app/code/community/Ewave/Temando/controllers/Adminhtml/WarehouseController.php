@@ -62,6 +62,11 @@ class Ewave_Temando_Adminhtml_WarehouseController extends Mage_Adminhtml_Control
 		$data['whs_products'] = serialize($products);
 	    }
 
+	    if (isset($links['users'])) {
+		$users = Mage::helper('adminhtml/js')->decodeGridSerializedInput($links['users']);
+		$data['whs_users'] = serialize($users);
+	    }
+
 	    $model->setData($data);
 
 	    Mage::getSingleton('adminhtml/session')->setFormData($data);
@@ -158,7 +163,7 @@ class Ewave_Temando_Adminhtml_WarehouseController extends Mage_Adminhtml_Control
 	//$this->_initProduct();
 	$this->_initWarehouse();
 	$this->loadLayout();
-	$this->getLayout()->getBlock('temando.warehouse.product.edit.tab.related');
+	$this->getLayout()->getBlock('temando.warehouse.edit.tab.related');
 	$this->renderLayout();
     }
 
@@ -173,26 +178,20 @@ class Ewave_Temando_Adminhtml_WarehouseController extends Mage_Adminhtml_Control
 	$this->renderLayout();
     }
     
-    /**
-     * Initialize product from request parameters
-     *
-     * @return Mage_Catalog_Model_Product
-     */
-    protected function _initProduct() {
-	$this->_title($this->__('Warehouse'))
-		->_title($this->__('Manage Products'));
-
-	$productId = (int) $this->getRequest()->getParam('id');
-	$product = Mage::getModel('catalog/product');
-
-	$product->setData('_edit_mode', true);
-	if ($productId) {
-	    $product->load($productId);
+    public function usersAction() {
+	$this->_initWarehouse();
+	$this->loadLayout();
+	$this->getLayout()->getBlock('temando.warehouse.edit.tab.users');
+	$this->renderLayout();
 	}
 
-	Mage::register('product', $product);
-	return $product;
+    public function usersGridAction() {
+	$this->_initWarehouse();
+	$this->loadLayout();
+	$this->getLayout()->getBlock('temando.warehouse.edit.tab.users');
+	$this->renderLayout();
     }
+    
     
     /**
      * Initialize product from request parameters

@@ -104,6 +104,31 @@
 	</block>
     </temando_adminhtml_warehouse_relatedgrid>
 
+    <temando_adminhtml_warehouse_users>
+	<block type="core/text_list" name="root">
+	    <block type="temando/adminhtml_warehouse_edit_tab_users" name="temando.warehouse.edit.tab.users"/>
+	    <block type="adminhtml/widget_grid_serializer" name="users_grid_serializer">
+		<reference name="users_grid_serializer">
+		    <action method="initSerializerBlock">
+			<grid_block_name>temando.warehouse.edit.tab.users</grid_block_name>
+			<data_callback>getSelectedRelatedUsers</data_callback>
+			<hidden_input_name>links[users]</hidden_input_name>
+			<reload_param_name>in_users</reload_param_name>
+		    </action>
+		    <action method="addColumnInputName">
+			<input_name>position</input_name>
+		    </action>
+		</reference>
+	    </block>
+	</block>
+    </temando_adminhtml_warehouse_users>
+	
+    <temando_adminhtml_warehouse_usersgrid>
+	<block type="core/text_list" name="root">
+	    <block type="temando/adminhtml_warehouse_edit_tab_users" name="temando.warehouse.edit.tab.users"/>
+	</block>
+    </temando_adminhtml_warehouse_usersgrid>
+
     <temando_adminhtml_zone_index>
 	<reference name="content">
 	    <block type="temando/adminhtml_zone" name="temando_zone">
