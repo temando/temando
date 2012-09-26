@@ -5,7 +5,7 @@
  *
  * @author martin
  */
-class Ewave_Temando_Block_Admnhtml_Shipment_Grid_Renderer_Origin extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Text {
+class Ewave_Temando_Block_Adminhtml_Shipment_Grid_Renderer_Origin extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Text {
     
     public function _getValue(Varien_Object $row)
     {
