@@ -134,4 +134,20 @@
         </reference>
     </customer_address_form>
    
+    <paypal_express_review>
+	<reference name="head" >
+            <action method="removeItem">
+                <type>skin_js</type>
+                <name>js/temando/autocomplete.js</name>
+            </action>
+            <action method="removeItem">
+                <type>skin_js</type>
+                <name>js/temando/custom.js</name>
+            </action>
+        </reference>
+	<reference name="before_body_end">
+	    <remove name="pcs" />
+	</reference>
+    </paypal_express_review>
+   
 </layout>

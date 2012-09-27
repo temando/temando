@@ -145,4 +145,12 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	}
 	return false;
     }
+    
+    public function isRestrictive()
+    {
+	if($this->getActionRateType() == Ewave_Temando_Model_System_Config_Source_Rule_Type::RESTRICT) {
+	    return true;
+	}
+	return false;
+    }
 }

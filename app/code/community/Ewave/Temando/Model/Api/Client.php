@@ -36,10 +36,6 @@ class Ewave_Temando_Model_Api_Client extends Mage_Core_Model_Abstract
             $url = "https://training-api.temando.com/schema/2009_06/server.wsdl";
         } else {
             $url = "https://api.temando.com/schema/2009_06/server.wsdl";
-            if (!$not_affilate) {
-                $username = Ewave_Temando_Model_Signup_Form::AFFILATE_USERNAME;
-                $password = Ewave_Temando_Model_Signup_Form::AFFILATE_PASSWORD;
-            }
         }
         
         if ($username == null || $username == false) {

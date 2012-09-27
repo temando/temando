@@ -32,6 +32,20 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
     
     
     /**
+     * Flag if any of the valid rules is restrictive (shipping not allowed)
+     * @var boolean 
+     */
+    protected $_hasRestrictive = null;
+    
+    
+    /**
+     * Text to display to customer when restrictive rule setup
+     * @var string 
+     */
+    protected $_restrictiveNote = '';
+    
+    
+    /**
      * @var Ewave_Temando_Helper_Data 
      */
     protected $_helper;
@@ -108,11 +122,43 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 	return $this->_hasDynamic;
     }
     
+    /**
+     * Checks if there is a restrictive rule which cancels all
+     * 
+     * @return boolean true if restrictive rule exist, 
+     * false otherwise or when rules are not loaded
+     */
+    public function hasRestrictive()
+    {
+	if(is_null($this->_hasRestrictive))
+	{
+	    $this->_hasRestrictive = false;
+
+	    if(!is_null($this->_validRules) && count($this->_validRules)) {
+		foreach($this->_validRules as $rule) {
+		    if($rule->isRestrictive())
+		    {
+			$this->_hasRestrictive = true;
+			$this->_restrictiveNote = $rule->getActionRestrictNote();
+			break;
+		    }
+		}
+	    }
+	}
+	
+	return $this->_hasRestrictive;
+    }
+    
     
     public function getShippingMethods(&$error, $options, $quotes = null)
     {
 	if(!$this->_validRules || !count($this->_validRules)) {
 	    $error = self::ERR_NO_METHODS;
+	    return;
+	}
+
+	if($this->hasRestrictive()) {
+	    $error = $this->_restrictiveNote;
 	    return;
 	}
 

@@ -69,9 +69,11 @@
 		<block type="temando/adminhtml_warehouse_edit_tab_general" name="temando_warehouse_edit_tab_general" />
 		<block type="temando/adminhtml_warehouse_edit_tab_origin" name="temando_warehouse_edit_tab_origin" />
 		<block type="temando/adminhtml_warehouse_edit_tab_zone" name="temando_warehouse_edit_tab_zone" />
+		<block type="temando/adminhtml_warehouse_edit_tab_extras" name="temando_warehouse_edit_tab_extras" />
 		<action method="addTab"><name>general_section</name><block>temando_warehouse_edit_tab_general</block></action>
 		<action method="addTab"><name>origin_section</name><block>temando_warehouse_edit_tab_origin</block></action>
 		<action method="addTab"><name>zone_section</name><block>temando_warehouse_edit_tab_zone</block></action>
+		<action method="addTab"><name>extras_section</name><block>temando_warehouse_edit_tab_extras</block></action>
 	    </block>	
         </reference>
 	<reference name="content">

@@ -130,11 +130,11 @@ class Ewave_Temando_Model_Warehouse extends Mage_Core_Model_Abstract {
 	    'phone2' => $this->getData('contact_phone_2'),
 	    'fax' => $this->getContactFax(),
 	    'email' => $this->getContactEmail(),
-	    'loadingFacilities' => 'N',
-	    'forklift' => 'N',
-	    'dock' => 'N',
-	    'limitedAccess' => 'N',
-	    'postalBox' => 'N',
+	    'loadingFacilities' => $this->getLoadingFacilities(),
+	    'forklift' => $this->getForklift(),
+	    'dock' => $this->getDock(),
+	    'limitedAccess' => $this->getLimitedAccess(),
+	    'postalBox' => $this->getPostalBox(),
 	);
     }
     

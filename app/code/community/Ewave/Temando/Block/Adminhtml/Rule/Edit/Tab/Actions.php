@@ -116,6 +116,17 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Actions
 	    'note' => Mage::helper('temando')->__('For min/max, enter range as min:max (ie \'5.95:10.95\' to keep shipping price between $5.95 - $10.95)')
 	));
 	
+	$fieldset = $form->addFieldset('actions_restrict_fieldset', array(
+	    'legend' => Mage::helper('temando')->__('Restrict Shipping Configuration')
+	));
+
+	$fieldset->addField('action_restrict_note', 'textarea', array(
+	   'name'   => 'action_restrict_note',
+	   'label'  => Mage::helper('temando')->__('Note'),
+	   'title'  => Mage::helper('temando')->__('Note'),
+	   'note'   => Mage::helper('temando')->__('Displayed to a customer when shipping is restricted.') 
+	));
+	
 
         $form->setValues($model->getData());
         $this->setForm($form);

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ewave_Temando>
-            <version>1.7.0</version>
+            <version>1.7.1</version>
         </Ewave_Temando>
     </modules>
     <global>
