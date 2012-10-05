@@ -82,7 +82,12 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 	$collection->addFieldToFilter('is_active', '1')
 		   ->setOrder('priority', 'ASC');
 	
-	$store_id = Mage::app()->getStore(null)->getId();
+	//admin - manual order creation
+	if(Mage::app()->getStore()->isAdmin()) {
+	    $store_id = Mage::app()->getRequest()->getParam('store_id');
+	} else {
+	    $store_id = Mage::app()->getStore(null)->getId();
+	}
 	foreach($collection->getItems() as $rule) {
 	    /* @var $rule Ewave_Temando_Model_Rule */
 	    $store_ids = explode(',', $rule->getStoreIds());
