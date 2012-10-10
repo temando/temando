@@ -251,10 +251,24 @@
                             <show_in_store>1</show_in_store>
                             <comment>
                                 <![CDATA[
-                                    Show error message to customer from Temando, or show flat rate shipping method.<br />
+                                    Show error message to customer from Temando, custom message, or show flat rate shipping method.<br />
                                 ]]>
                             </comment>
                         </error_process>
+			<error_message>
+                            <label>Custom Error Message</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>
+                                <![CDATA[
+                                    Custom error message displayed to customer instead of Temando error.<br />
+                                ]]>
+                            </comment>
+			    <depends><error_process>custom</error_process></depends>
+                        </error_message>
                         <method translate="label">
                             <label>Pricing Method</label>
                             <frontend_type>select</frontend_type>

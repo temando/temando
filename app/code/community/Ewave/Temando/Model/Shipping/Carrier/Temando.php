@@ -282,12 +282,19 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 
                 $quotes = $request->getQuotes();
             } catch (Exception $ex) {
-                if (Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW == Mage::helper('temando')->getConfigData('pricing/error_process')) {
-                    return $this->_getErrorMethod($ex->getMessage());
-                    return $result->append($this->_getErrorMethod($ex->getMessage()));
-                }
-                // return flat rate
-                return $result->append($this->_getFlatRateMethod());
+                switch(Mage::helper('temando')->getConfigData('pricing/error_process')) {
+		    case Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW:
+			return $this->_getErrorMethod($ex->getMessage());
+			return $result->append($this->_getErrorMethod($ex->getMessage()));
+			break;
+		    case Ewave_Temando_Model_System_Config_Source_Errorprocess::CUST:
+			return $this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message'));
+			return $result->append($this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message')));
+			break;
+		    case Ewave_Temando_Model_System_Config_Source_Errorprocess::FLAT:
+			return $result->append($this->_getFlatRateMethod());
+			break;
+		}
             }
         }
         
