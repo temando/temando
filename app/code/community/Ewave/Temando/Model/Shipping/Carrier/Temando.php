@@ -324,14 +324,18 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 		$err = array();
 		$methods = $engine->getShippingMethods($err, $options, $quotes);
 		if(!empty($err)) {
-		    if (Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW == Mage::helper('temando')->getConfigData('pricing/error_process'))
-		    {
-			return $this->_getErrorMethod($err);
-			return $result->append($this->_getErrorMethod($err));
-		    } 
-		    else 
-		    {
-			return $result->append($this->_getFlatRateMethod());
+		    switch(Mage::helper('temando')->getConfigData('pricing/error_process')) {
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW:
+			    return $this->_getErrorMethod($err->getMessage());
+			    return $result->append($this->_getErrorMethod($err->getMessage()));
+			    break;
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::CUST:
+			    return $this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message'));
+			    return $result->append($this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message')));
+			    break;
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::FLAT:
+			    return $result->append($this->_getFlatRateMethod());
+			    break;
 		    }
 		} else {
 		    foreach($methods as $method) {
@@ -343,12 +347,19 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 	    default: //DYNAMIC - all variants 
 		//need quotes - check if we have some
 		if (!$quotes || count($quotes) == 0) {
-		    if (Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW == Mage::helper('temando')->getConfigData('pricing/error_process')) {
-				return $this->_getErrorMethod(self::ERR_NO_METHODS);
-				return $result->append($this->_getErrorMethod(self::ERR_NO_METHODS));
+		    switch(Mage::helper('temando')->getConfigData('pricing/error_process')) {
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW:
+			    return $this->_getErrorMethod(self::ERR_NO_METHODS);
+			    return $result->append($this->_getErrorMethod(self::ERR_NO_METHODS));
+			    break;
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::CUST:
+			    return $this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message'));
+			    return $result->append($this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message')));
+			    break;
+			case Ewave_Temando_Model_System_Config_Source_Errorprocess::FLAT:
+			    return $result->append($this->_getFlatRateMethod());
+			    break;
 		    }
-		    // return flat rate
-		    return $result->append($this->_getFlatRateMethod());
 		}
         
 		//if not admin then filter display by pricing method
