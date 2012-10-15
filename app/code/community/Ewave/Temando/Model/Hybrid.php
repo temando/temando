@@ -212,7 +212,7 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 			    ->setCarrier(self::CARRIER_CODE)
 			    ->setCarrierTitle(Mage::getStoreConfig('carriers/temando/title'))
 			    ->setMethodTitle($rule->getActionStaticLabel())
-			    ->setMethod(self::METHOD_CODE)
+			    ->setMethod(self::METHOD_CODE.'_'.$rule->getId())
 			    ->setPrice($rule->getActionStaticValue())
 			    ->setCost($rule->getActionStaticValue());
 	    }

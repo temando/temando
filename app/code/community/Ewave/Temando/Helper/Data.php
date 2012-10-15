@@ -480,6 +480,11 @@ class Ewave_Temando_Helper_Data extends Mage_Core_Helper_Abstract {
 	if (in_array($quote_id, $fixed_carriers)) {
 	    return false;
 	}
+	
+	//hybrid - flat rates
+	if(preg_match('/^hybrid_(\d+)/', $quote_id)) {
+	    return false;
+	}
 
 	return true;
     }

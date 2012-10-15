@@ -29,7 +29,7 @@ $shipto = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress
                     $show_free = $_rate;
                 }
 		
-		if ($_rate->getCode() === 'temando_hybrid') {
+		if (preg_match('/^temando_hybrid/', $_rate->getCode())) {
 		    $static_rates[] = $_rate;
 		}
             ?>
@@ -57,7 +57,7 @@ $shipto = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress
             <dl>
                 <ul>
                     <li> <!-- PROCESS ALL INCLUDING DYNAMIC + GET OPTIONS -->
-                        <input name="temando_quotes" class="temando_free_ship" type="radio" value="<?php echo $rate->getCode()?>" id="temando_quote_hybrid"<?php if($_sole || $rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio" onchange="return includingShipping('<?php echo $rate->getCode();?>');"/>
+                        <input name="temando_quotes" class="temando_free_ship" type="radio" value="<?php echo $rate->getCode()?>" id="<?php echo str_replace('temando', 'temando_quote', $rate->getCode()) ?>"<?php if($_sole || $rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio" onchange="return includingShipping('<?php echo $rate->getCode();?>');"/>
                             <label for="temando_quote_hybrid"><?php echo $this->__($rate->getMethodTitle()); ?>
 				<?php
                                     $_excl = $this->getShippingPrice($rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax());
