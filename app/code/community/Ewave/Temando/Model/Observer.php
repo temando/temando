@@ -97,40 +97,41 @@ class Ewave_Temando_Model_Observer
 	//packages returned from API saved on quote
 	if(!is_null($selected_quote) && !is_null($selected_quote->getPackaging())) 
 	{
+	    $packagingTypes = Mage::getModel('temando/system_config_source_shipment_packaging')->getOptions();
 	    $helper = Mage::helper('temando/v2');
 	    /* @var $helper Ewave_Temando_Helper_V2 */
 	    
 	    $packs = $selected_quote->getPackaging();
 	    $allItems = array();
-        foreach ($order->getAllItems() as $item) {
+	    foreach ($order->getAllItems() as $item) {
 		if ($item->getParentItem() || $item->getFreeShipping()) {
-                continue;
-            }
-		$qty = $item->getQty() ? $item->getQty() : $item->getQtyOrdered();
-		$allItems[$item->getSku()] = array('qty' => $qty, 'lineItemTotal' => $item->getRowTotalInclTax());	
-	    }
-	    $packagings = unserialize($packs);
-	    reset($packagings);
+		    continue;
+		}
+		    $qty = $item->getQty() ? $item->getQty() : $item->getQtyOrdered();
+		    $allItems[$item->getSku()] = array('qty' => $qty, 'lineItemTotal' => $item->getRowTotalInclTax());	
+		}
+		$packagings = unserialize($packs);
+		reset($packagings);
 
-	    foreach($packagings as $package) {
-		$products = $package['products'];
+		foreach($packagings as $package) {
+		    $products = $package['products'];
 
-		$box = Mage::getModel('temando/box');
-		$box
-		    ->setShipmentId($temando_shipment->getId())
-		    ->setComment($package['description'])
-		    ->setQty($package['quantity'])
-		    ->setValue($helper->getConsolidatedPackageValue($products, $allItems))
-		    ->setLength($package['length'])
-		    ->setWidth($package['width'])
-		    ->setHeight($package['height'])
-		    ->setMeasureUnit($package['distanceMeasurementType'])
-		    ->setWeight($package['weight'])
-		    ->setWeightUnit($package['weightMeasurementType'])
-		    ->setPackaging($package['packaging'])
-		    ->setFragile($package['fragile'])
-		    ->save();
-	    }
+		    $box = Mage::getModel('temando/box');
+		    $box
+			->setShipmentId($temando_shipment->getId())
+			->setComment($package['description'])
+			->setQty($package['quantity'])
+			->setValue($helper->getConsolidatedPackageValue($products, $allItems))
+			->setLength($package['length'])
+			->setWidth($package['width'])
+			->setHeight($package['height'])
+			->setMeasureUnit($package['distanceMeasurementType'])
+			->setWeight($package['weight'])
+			->setWeightUnit($package['weightMeasurementType'])
+			->setPackaging(array_search(strtolower(trim($package['packaging'])), array_map('strtolower', $packagingTypes)))
+			->setFragile($package['fragile'])
+			->save();
+		}
 
 	}
 	else //no packaging returned from API - take from Magento
@@ -138,72 +139,72 @@ class Ewave_Temando_Model_Observer
             
 	    foreach ($order->getAllItems() as $item) {
 		if ($item->getParentItem() || $item->getFreeShipping()) {
-                continue;
-            }
-
-            /* @var $order Mage_Sales_Model_Order */
-            
-            $product = Mage::getModel('catalog/product')
-                ->load($item->getProductId());
-            /* @var $product Mage_Catalog_Model_Product */
-
-            if ($product->isVirtual()) {
-                continue;
-            }
-	    
-	    $packages = array();
-	    if(Mage::helper('temando')->isVersion2()) {
-		$packages = Mage::helper('temando/v2')->getProductPackages($item, $product);
-	    } else {
-		Mage::helper('temando')->applyTemandoParamsToProductByItem($item, $product);
-	    }
-	    
-	    $qty = $item->getQty();
-	    if(!$qty) $qty = $item->getQtyOrdered();
-	    
-	    if(!empty($packages)) {
-		//version 2 - multi-package
-		$part = round($item->getRowTotalInclTax() / count($packages), 2);
-		$sub = 0.00; $i=0;
-		foreach($packages as $package) {
-			$i++;
-		    $box = Mage::getModel('temando/box');
-		    $box
-		        ->setShipmentId($temando_shipment->getId())
-			->setComment($package['description'])
-			->setQty($qty)
-			->setValue($i == count($packages) ? $item->getRowTotalInclTax() - $sub : $part) //TODO: add attribute price - need fraction
-			->setLength($package['length'])
-			->setWidth($package['width'])
-			->setHeight($package['height'])
-			->setMeasureUnit(Mage::helper('temando/v2')->getConfigData('units/measure'))
-			->setWeight($package['weight'])
-			->setWeightUnit(Mage::helper('temando/v2')->getConfigData('units/weight'))
-			->setPackaging($package['packaging'])
-			->setFragile($package['fragile'])
-			->save();
-		    $sub += $part;
+		    continue;
 		}
-	    } else {
-		$box = Mage::getModel('temando/box');
-		/* @var $box Ewave_Temando_Model_Box */
-		$box
-		    ->setShipmentId($temando_shipment->getId())
-		    ->setComment($product->getName())
-		    ->setQty($item->getQty())
-		    ->setValue($item->getRowTotalInclTax())
-		    ->setLength($product->getTemandoLength())
-		    ->setWidth($product->getTemandoWidth())
-		    ->setHeight($product->getTemandoHeight())
-		    ->setMeasureUnit(Mage::helper('temando')->getConfigData('units/measure'))
-		    ->setWeight($product->getWeight()*$qty)
-		    ->setWeightUnit(Mage::helper('temando')->getConfigData('units/weight'))
-		    ->setPackaging($product->getTemandoPackaging())
-		    ->setFragile($product->getTemandoFragile())
-		    ->save();
+
+		/* @var $order Mage_Sales_Model_Order */
+
+		$product = Mage::getModel('catalog/product')
+		    ->load($item->getProductId());
+		/* @var $product Mage_Catalog_Model_Product */
+
+		if ($product->isVirtual()) {
+		    continue;
+		}
+
+		$packages = array();
+		if(Mage::helper('temando')->isVersion2()) {
+		    $packages = Mage::helper('temando/v2')->getProductPackages($item, $product);
+		} else {
+		    Mage::helper('temando')->applyTemandoParamsToProductByItem($item, $product);
+		}
+
+		$qty = $item->getQty();
+		if(!$qty) $qty = $item->getQtyOrdered();
+
+		if(!empty($packages)) {
+		    //version 2 - multi-package
+		    $part = round($item->getRowTotalInclTax() / count($packages), 2);
+		    $sub = 0.00; $i=0;
+		    foreach($packages as $package) {
+			    $i++;
+			$box = Mage::getModel('temando/box');
+			$box
+			    ->setShipmentId($temando_shipment->getId())
+			    ->setComment($package['description'])
+			    ->setQty($qty)
+			    ->setValue($i == count($packages) ? $item->getRowTotalInclTax() - $sub : $part) //TODO: add attribute price - need fraction
+			    ->setLength($package['length'])
+			    ->setWidth($package['width'])
+			    ->setHeight($package['height'])
+			    ->setMeasureUnit(Mage::helper('temando/v2')->getConfigData('units/measure'))
+			    ->setWeight($package['weight'])
+			    ->setWeightUnit(Mage::helper('temando/v2')->getConfigData('units/weight'))
+			    ->setPackaging($package['packaging'])
+			    ->setFragile($package['fragile'])
+			    ->save();
+			$sub += $part;
+		    }
+		} else {
+		    $box = Mage::getModel('temando/box');
+		    /* @var $box Ewave_Temando_Model_Box */
+		    $box
+			->setShipmentId($temando_shipment->getId())
+			->setComment($product->getName())
+			->setQty($item->getQty())
+			->setValue($item->getRowTotalInclTax())
+			->setLength($product->getTemandoLength())
+			->setWidth($product->getTemandoWidth())
+			->setHeight($product->getTemandoHeight())
+			->setMeasureUnit(Mage::helper('temando')->getConfigData('units/measure'))
+			->setWeight($product->getWeight()*$qty)
+			->setWeightUnit(Mage::helper('temando')->getConfigData('units/weight'))
+			->setPackaging($product->getTemandoPackaging())
+			->setFragile($product->getTemandoFragile())
+			->save();
+		}
 	    }
-        }
-    }
+	}
     }
     
     protected function loadQuotes($order, $origin)
