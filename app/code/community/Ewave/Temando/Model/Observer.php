@@ -129,7 +129,7 @@ class Ewave_Temando_Model_Observer
 			->setWeight($package['weight'])
 			->setWeightUnit($package['weightMeasurementType'])
 			->setPackaging(array_search(strtolower(trim($package['packaging'])), array_map('strtolower', $packagingTypes)))
-			->setFragile($package['fragile'])
+			->setFragile($package['fragile'] == 'Y' ? 1 : 0)
 			->save();
 		}
 
