@@ -326,8 +326,8 @@ class Ewave_Temando_Model_Shipping_Carrier_Temando extends Mage_Shipping_Model_C
 		if(!empty($err)) {
 		    switch(Mage::helper('temando')->getConfigData('pricing/error_process')) {
 			case Ewave_Temando_Model_System_Config_Source_Errorprocess::VIEW:
-			    return $this->_getErrorMethod($err->getMessage());
-			    return $result->append($this->_getErrorMethod($err->getMessage()));
+			    return $this->_getErrorMethod($err);
+			    return $result->append($this->_getErrorMethod($err));
 			    break;
 			case Ewave_Temando_Model_System_Config_Source_Errorprocess::CUST:
 			    return $this->_getErrorMethod(Mage::helper('temando')->getConfigData('pricing/error_message'));
