@@ -3,8 +3,8 @@
 class DebugSoapClient extends SoapClient {
 
     public function __doRequest($request, $location, $action, $version, $one_way = 0) {
-	echo $request;
-	die();
+	Mage::log($request, null, 'raw-request.xml', true);
+	return parent::__doRequest($request, $location, $action, $version, $one_way);
     }
 
 }
@@ -89,6 +89,33 @@ class Ewave_Temando_Model_Api_V2_Client extends Mage_Core_Model_Abstract {
 	return $quotes;
     }
 
+    public function getQuotes($request) {
+	if (!$this->_client) {
+	    return false;
+	}
+	
+	if (!$this->_is_sand) {
+	    $request['clientId'] = Mage::helper('temando/v2')->getClientId();
+	}
+	
+	$response = $this->_client->getQuotes($request);
+	$packages = isset($response->anythings) ? 
+	    Mage::helper('temando/v2')->getSerializedPackagingFromApiResponse($response->anythings) : null;
+	
+	//load quotes
+	if (!is_array($response->quotes->quote)) {
+	    $response->quotes->quote = array(0 => $response->quotes->quote);
+	}
+
+	$quotes = array();
+	foreach ($response->quotes->quote as $quote_details) {
+	    $quotes[] = Mage::getModel('temando/quote')
+		    ->loadResponse($quote_details, $packages);
+	}
+
+	return $quotes;
+    }
+
     public function makeBookingByRequest($request) {
 	if (!$this->_is_sand) {
 	    $request['clientId'] = Mage::helper('temando/v2')->getClientId();
@@ -161,6 +188,8 @@ class Ewave_Temando_Model_Api_V2_Client extends Mage_Core_Model_Abstract {
 	    return false;
 	}
 
+	$request['clientId'] = Mage::helper('temando')->getClientId();
+
 	return $this->_client->createLocation($request);
     }
 
@@ -174,6 +203,8 @@ class Ewave_Temando_Model_Api_V2_Client extends Mage_Core_Model_Abstract {
 	if (!$this->_client) {
 	    return false;
 	}
+	
+	$request['clientId'] = Mage::helper('temando')->getClientId();
 
 	return $this->_client->updateLocation($request);
     }

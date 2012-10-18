@@ -94,13 +94,50 @@ class Ewave_Temando_Model_Observer
 	    ->setWarehouseId($warehouse_id)
             ->save();
             
+	//packages returned from API saved on quote
+	if(!is_null($selected_quote) && !is_null($selected_quote->getPackaging())) 
+	{
+	    $helper = Mage::helper('temando/v2');
+	    /* @var $helper Ewave_Temando_Helper_V2 */
+	    
+	    $packs = $selected_quote->getPackaging();
+	    $allItems = array();
         foreach ($order->getAllItems() as $item) {
-            if ($item->getParentItem()) {
+		if ($item->getParentItem() || $item->getFreeShipping()) {
                 continue;
             }
+		$qty = $item->getQty() ? $item->getQty() : $item->getQtyOrdered();
+		$allItems[$item->getSku()] = array('qty' => $qty, 'lineItemTotal' => $item->getRowTotalInclTax());	
+	    }
+	    $packagings = unserialize($packs);
+	    reset($packagings);
 
-            if ($item->getFreeShipping()) {
-                $has_free = true;
+	    foreach($packagings as $package) {
+		$products = $package['products'];
+
+		$box = Mage::getModel('temando/box');
+		$box
+		    ->setShipmentId($temando_shipment->getId())
+		    ->setComment($package['description'])
+		    ->setQty($package['quantity'])
+		    ->setValue($helper->getConsolidatedPackageValue($products, $allItems))
+		    ->setLength($package['length'])
+		    ->setWidth($package['width'])
+		    ->setHeight($package['height'])
+		    ->setMeasureUnit($package['distanceMeasurementType'])
+		    ->setWeight($package['weight'])
+		    ->setWeightUnit($package['weightMeasurementType'])
+		    ->setPackaging($package['packaging'])
+		    ->setFragile($package['fragile'])
+		    ->save();
+	    }
+
+	}
+	else //no packaging returned from API - take from Magento
+	{
+            
+	    foreach ($order->getAllItems() as $item) {
+		if ($item->getParentItem() || $item->getFreeShipping()) {
                 continue;
             }
 
@@ -166,6 +203,7 @@ class Ewave_Temando_Model_Observer
 		    ->save();
 	    }
         }
+    }
     }
     
     protected function loadQuotes($order, $origin)

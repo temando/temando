@@ -73,6 +73,29 @@ class Ewave_Temando_Model_Api_V2_Request_Anythings extends Mage_Core_Model_Abstr
 	    return false;
 	}
 
+	switch(Mage::helper('temando')->getConfigData('defaults/consolidation')) {
+	    	    
+	    case Ewave_Temando_Model_System_Config_Source_Packaging_Consolidation::TEMANDO:
+		foreach($this->_anythings as $anything) {
+		    $packages = $anything->toRequestArray();
+		    foreach($packages as $request) {
+			$request['weight'] = Mage::helper('temando/v2')->convertWeightToGrams($request['weight'], $request['weightMeasurementType']);
+			$request['weightMeasurementType'] = Ewave_Temando_Model_System_Config_Source_Unit_Weight::GRAMS;
+			
+			$output[] = $request;
+		    }
+		}
+		break;
+		
+	    default:
+		$output = $this->_consolidate();
+		break;
+	}
+	
+	return $output;
+    }
+    
+    protected function _consolidate() {
 	$only_satchel_and_carton = true;
 	$has_carton = false;
 	$output = array();

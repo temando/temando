@@ -62,6 +62,8 @@ class Ewave_Temando_Model_Api_V2_Request_Anything extends Mage_Core_Model_Abstra
             return false;
         }
         
+	$anything = array();
+        
         if ($this->_item instanceof Ewave_Temando_Model_Box) {
             $any_thing = array(
                 'class'         => 'General Goods',
@@ -92,6 +94,39 @@ class Ewave_Temando_Model_Api_V2_Request_Anything extends Mage_Core_Model_Abstra
             //Mage::helper('temando/v2')->applyTemandoParamsToProductByItem($this->_item, $this->_product);
 	    $productPackages = Mage::helper('temando/v2')->getProductPackages($this->_item, $this->_product);
 	    
+	    switch(Mage::helper('temando')->getConfigData('defaults/consolidation')) {
+		
+		case Ewave_Temando_Model_System_Config_Source_Packaging_Consolidation::TEMANDO:
+		    foreach($productPackages as $package) {
+			
+			$quantity = (int)($this->_item->getQty() ? $this->_item->getQty() : $this->_item->getQtyOrdered());
+			for($i=1; $i<=$quantity; $i++) {
+			    
+			    $any_thing = array(
+				'class'			    => 'General Goods',
+				'subclass'			    => 'Household Goods',
+				'packaging'			    => Mage::getModel('temando/system_config_source_shipment_packaging')->getOptionLabel($package['packaging']),
+				'mode'			    => 'Less than load',
+				'packagingOptimisation'	    => 'Y',
+				'distanceMeasurementType'	    => Mage::helper('temando/v2')->getConfigData('units/measure'),
+				'weightMeasurementType'	    => Mage::helper('temando/v2')->getConfigData('units/weight'),
+				'qualifierFreightGeneralFragile' => $package['fragile'] == '1' ? 'Y' : 'N',
+				'weight'			    => $package['weight'],
+				'length'			    => $package['length'],
+				'width'			    => $package['width'],
+				'height'			    => $package['height'],
+				'quantity'			    => '1',
+				'articles'			    => array(
+				    'article'   => array('description' => $package['description'], 'sku' => $this->_item->getSku())
+				)
+			    );
+
+			    $anything[] = $any_thing;
+			}
+		    }
+		    break;
+		
+		default:
 	    foreach($productPackages as $package) {
 		$any_thing = array(
 		    'class'	=> 'General Goods',
@@ -114,6 +149,8 @@ class Ewave_Temando_Model_Api_V2_Request_Anything extends Mage_Core_Model_Abstra
 		
 		$anything[] = $any_thing;
 	    }
+		    break;
+	    } 
         }
 
         // return only after checking empty data of product attributes

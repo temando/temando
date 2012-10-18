@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ewave_Temando>
-            <version>1.7.1</version>
+            <version>1.7.2</version>
         </Ewave_Temando>
     </modules>
     <global>
@@ -177,6 +177,7 @@
                 <always_use><![CDATA[0]]></always_use>
                 <class><![CDATA[General Goods]]></class>
                 <subclass><![CDATA[Household Goods]]></subclass>
+				<consolidation><![CDATA[1]]></consolidation>
                 <packaging><![CDATA[0]]></packaging>
                 <fragile><![CDATA[0]]></fragile>
                 <length><![CDATA[10]]></length>

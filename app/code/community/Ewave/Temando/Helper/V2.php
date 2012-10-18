@@ -1,16 +1,18 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of V2
  *
  * @author martin
  */
 class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
+    
+    /**
+     * Holds all items on individual order and their split value
+     * 
+     * @var array 
+     */
+    protected $_orderItemValues = null;
     
     /**
      * @param Mage_Sales_Model_Order_Item $item
@@ -43,6 +45,13 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 	
     }
     
+    /**
+     * Get product packages - as defined on product level
+     * or default from configuration
+     * 
+     * @param type $product
+     * @return type 
+     */
     protected function getPackages($product) {
 	$packages = array();
 	
@@ -72,6 +81,12 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 	return $packages;
     }
     
+    /**
+     * Get default package from configured values
+     * 
+     * @param type $product
+     * @return array 
+     */
     protected function getDefaultPackage($product) {
 	return array(
 	    'description' => $product->getName(),
@@ -84,6 +99,13 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 	);
     }
     
+    /**
+     * Get simple product from parent configurable product
+     * 
+     * @param type $product
+     * @param type $item
+     * @return type 
+     */
     public function getSelectedSimpleFromConfigurable($product, $item) {
 	if (!is_callable(array($product, 'getTypeInstance')) || !is_callable(array($product->getTypeInstance(), 'getUsedProducts'))) {
 	    return $product;
@@ -148,12 +170,144 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 	return $return;
     }
     
-    
+    /**
+     * Returns applicable dynamic origin based on destination
+     * 
+     * @param int|string $postcode
+     * @param int $storeId
+     * @return Ewave_Temando_Model_Warehouse | null
+     */
     public function getDynamicOrigin($postcode, $storeId = null)
     {
 	return Mage::getSingleton('temando/warehouse')->getCollection()->getOriginByPostcode($postcode, $storeId);
     }
     
+    /**
+     * Prepares returned packaging information from getQuotes request
+     * for save into database table
+     * 
+     * @param stdClass $anythings
+     * @return serialized array of packaging details 
+     */
+    public function getSerializedPackagingFromApiResponse($anythings) {
+	
+	//Mage::log($anythings, null, 'anythings.log', true);
+	
+	if(!is_array($anythings->anything)) {
+	    $anythings->anything = array(0 => $anythings->anything);
+	}
+    
+	$packages = array();
+	foreach($anythings->anything as $package)
+    {
+	    $productCounts = array();
+	    $customPackageDescription = isset($package->packagingDescription) ? $package->packagingDescription . ': ' : '';
+	    
+	    isset($package->articles) ? 
+		$description = $customPackageDescription . $this->getPackagingDescription($package->articles, $productCounts) : 
+		$description = null;
+	    
+	    $packages[] = array(
+		'class'		    => $package->class,
+		'mode'		    => $package->mode,
+		'packaging'	    => $package->packaging,
+		'fragile'	    => $package->qualifierFreightGeneralFragile,
+		'distanceMeasurementType'   => $package->distanceMeasurementType,
+		'weightMeasurementType'	    => $package->weightMeasurementType,
+		'length'	    => $package->length,
+		'width'		    => $package->width,
+		'height'	    => $package->height,
+		'weight'	    => $package->weight,
+		'quantity'	    => $package->quantity,
+		'packagingDescription'   => isset($package->packagingDescription) ? $package->packagingDescription : '',
+		'description'   => $description,//$this->getPackagingDescription(isset($package->articles) ? $package->articles : null)
+		'products'	=> $productCounts,
+	    );
+	}
+		
+	return serialize($packages);
+    }
+    
+    /**
+     * Constructs package description from API getQuotes response (article)
+     * with consolidated quantities (ie 1x t-shirt, 2x pants)
+     * 
+     * @param stdClass $articles
+     * @return string Description | empty string if no articles returned 
+     */
+    public function getPackagingDescription($articles, &$count = array()) {
+	
+	if($articles) {
+	    if(!is_array($articles->article)) {
+		$articles->article = array(0 => $articles->article);
+	    }
+	    
+	    $tmp = array();
+	    foreach($articles->article as $article) {
+		if(array_key_exists($article->sku, $count)) {
+		    $count[$article->sku] += 1; 
+		} else {
+		    $count[$article->sku] = 1;
+		}
+		$tmp[$article->sku] = $count[$article->sku].'x '.$article->description; 
+	    }
+	    
+	    return implode(',', array_values($tmp));  
+	} 
+	
+	return '';
+    }
+    
+    /**
+     * Get values for individual items on order
+     * 
+     * @param array $allItems - All order items
+     * @return array of individual item values 
+     */
+    public function getOrderItemValues($allItems) {
+	$return = array();
+	if(!empty($allItems)) {
+	    foreach($allItems as $item => $values) {
+		$qty = $values['qty'];
+		$tot = $values['lineItemTotal'];
+		$per1 = round($tot / $qty, 2);
+
+		for($i = 1; $i <= $qty; $i++) {
+		    //if last then substract from total to balance out, otherwise use per1 split
+		    if($i == $qty) $return[$item][] = $tot - (($qty-1)*$per1);
+		    else $return[$item][] = $per1;
+		}
+	    }
+	}
+	return $return;
+    }
+    
+    /**
+     * Get value of a package - combined value of all items in this consolidated package
+     * 
+     * @param array $products All products in this package with quantities
+     * @param array $allItems All order items
+     * @return float 
+     */
+    public function getConsolidatedPackageValue($products, $allItems)
+    {
+	if(is_null($this->_orderItemValues)) {
+	    $this->_orderItemValues = $this->getOrderItemValues($allItems);
+    }
+    
+	$total = 0;
+	if(!empty($products)) {
+	    foreach($products as $sku => $qty) {
+		for($i = 1; $i <= $qty; $i++) {
+		    $val = array_pop($this->_orderItemValues[$sku]);
+		    if(!is_null($val))
+			$total += (float)$val;
+		}
+	    }
+	}
+	
+	return $total;
+    }
 }
 
 

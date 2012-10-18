@@ -145,7 +145,16 @@ class Ewave_Temando_Model_Api_V2_Request extends Mage_Core_Model_Abstract
                     $this->getSandbox()
                 );
 
+	    switch(Mage::helper('temando')->getConfigData('defaults/consolidation')) {
+		case Ewave_Temando_Model_System_Config_Source_Packaging_Consolidation::TEMANDO:
+		    $quotes = $api->getQuotes($request_array);
+		    break;
+		
+		default:
             $quotes = $api->getQuotesByRequest($request_array);
+		    break;
+	    }
+            
         } catch(Exception $e) {
             throw $e;
         }

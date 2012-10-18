@@ -92,7 +92,7 @@ class Ewave_Temando_Model_Quote extends Mage_Core_Model_Abstract
      * @param stdClass $response the SOAP response directly from the Temando
      * API.
      */
-    public function loadResponse(stdClass $response)
+    public function loadResponse(stdClass $response, $packaging = null)
     {
         if ($response instanceof stdClass) {
             $carrier = Mage::getModel('temando/carrier')
@@ -153,7 +153,7 @@ class Ewave_Temando_Model_Quote extends Mage_Core_Model_Abstract
                 ->setExtras($extras_array)
                 ->setCarbonTotalPrice(array_key_exists('carbonoffset', $extras_array) ? $extras_array['carbonoffset']['totalPrice'] : 0)
                 ->setInsuranceTotalPrice(array_key_exists('insurance', $extras_array) ? $extras_array['insurance']['totalPrice'] : 0)
-                
+                ->setPackaging($packaging)
                 ->setLoaded(true);
         }
         return $this;
