@@ -106,7 +106,6 @@ class Ewave_Temando_Model_Api_Client extends Mage_Core_Model_Abstract
     {
         if (!$this->_is_sand) {
             $request['clientId'] = Mage::helper('temando')->getClientId();
-            $request['promotionCode'] = Ewave_Temando_Model_Signup_Form::AFFILATE_PROMO;
         }
         if (!$this->_client) {
             return false;
