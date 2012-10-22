@@ -21,9 +21,9 @@ class Ewave_Temando_Model_Api_Request_Anything extends Mage_Core_Model_Abstract
     
     public function setItem($item)
     {
-        if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item || $item instanceof Ewave_Temando_Model_Box) {
+        if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item || $item instanceof Mage_Sales_Model_Quote_Address_Item || $item instanceof Ewave_Temando_Model_Box) {
             $this->_item = $item;
-            if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item) {
+            if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Quote_Address_Item || $item instanceof Mage_Sales_Model_Order_Item) {
                 $this->_product = Mage::getModel('catalog/product')->load($item->getProductId());
             }
         }
@@ -134,6 +134,7 @@ class Ewave_Temando_Model_Api_Request_Anything extends Mage_Core_Model_Abstract
     {
         return $this->_item instanceof Mage_Sales_Model_Quote_Item ||
             $this->_item instanceof Mage_Sales_Model_Order_Item ||
+	    $this->_item instanceof Mage_Sales_Model_Quote_Address_Item ||
             $this->_item instanceof Ewave_Temando_Model_Box;
         // TODO: improve validation
         // - product dimensions

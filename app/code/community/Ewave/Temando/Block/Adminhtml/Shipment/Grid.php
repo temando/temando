@@ -13,6 +13,8 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 
     protected function _prepareCollection()
     {
+	Mage::getModel('temando/shipment')->getCollection()->fixOrderIds();
+	
         $collection = Mage::getModel('temando/shipment')->getCollection();
 	$collection->addFieldToFilter('grid_display', 1);
         $collection->join('sales/order', 'main_table.order_id=`sales/order`.entity_id', array('increment_id', 'created_at', 'shipping_amount'));

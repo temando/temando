@@ -27,4 +27,22 @@ class Ewave_Temando_Model_Mysql4_Shipment_Collection extends Mage_Core_Model_Mys
 	return false;
     }
     
+    /**
+     * Populate order_id on shipments where order_id is NULL
+     * - happens when shipping to multiple addresses used on checkout
+     */
+    public function fixOrderIds() {
+	$this->addFieldToFilter('order_id', array('null' => true))->load();
+	if($this->count()) {
+	    foreach($this->getItems() as $item) {
+		if($item->getOrderIncrementId())
+		{
+		    $order = Mage::getModel('sales/order')->loadByIncrementId($item->getOrderIncrementId());
+		    $item->setOrderId($order->getId());
+		    $item->save();
+		}
+	    }
+	}
+    }    
+    
 }

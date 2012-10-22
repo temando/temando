@@ -37,8 +37,8 @@ class Ewave_Temando_Model_Api_V2_Request_Anythings extends Mage_Core_Model_Abstr
     }
 
     public function addItem($item) {
-	if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item || $item instanceof Ewave_Temando_Model_Box) {
-	    if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item) {
+	if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item || $item instanceof Mage_Sales_Model_Quote_Address_Item || $item instanceof Ewave_Temando_Model_Box) {
+	    if ($item instanceof Mage_Sales_Model_Quote_Item || $item instanceof Mage_Sales_Model_Order_Item || $item instanceof Mage_Sales_Model_Quote_Address_Item) {
 		$this->_need_optimize = true;
 	    }
 

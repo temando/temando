@@ -78,7 +78,8 @@ class Ewave_Temando_Model_Observer
 	}
 
         $temando_shipment
-            ->setOrderId($order->getId())
+            ->setOrderId($order->getId() ? $order->getId() : null)
+	    ->setOrderIncrementId($order->getIncrementId())
 	    ->setStoreId($order->getStoreId())
             ->setStatus(Ewave_Temando_Model_System_Config_Source_Shipment_Status::PENDING)
             ->setDestinationContactName($order->getShippingAddress()->getName())
