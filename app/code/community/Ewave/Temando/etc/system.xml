@@ -236,6 +236,7 @@
                             <frontend_type>multiselect</frontend_type>
                             <sort_order>20</sort_order>
                             <source_model>temando/shipping_carrier_temando_source_method</source_model>
+			    <can_be_empty>1</can_be_empty>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -251,6 +252,7 @@
                             <frontend_type>multiselect</frontend_type>
                             <sort_order>30</sort_order>
                             <source_model>temando/shipping_carrier_temando_source_method</source_model>
+			    <can_be_empty>1</can_be_empty>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
