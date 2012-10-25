@@ -342,4 +342,35 @@ class Ewave_Temando_Model_Quote extends Mage_Core_Model_Abstract
 	
 	return $this;
     }
+    
+    /**
+     * Returns service type of this quote based on carrier id selected.
+     * - favours faster services (ie: if carrier id used as 3hr service as well as same day,
+     *   service type returned will be 3hr service
+     *  
+     * @return int 
+     */
+    public function getServiceType() {
+	
+	$sameDayCarriers = explode(',', Mage::helper('temando')->getConfigData('shipments_display/sameday_carriers'));
+	$expressCarriers = explode(',', Mage::helper('temando')->getConfigData('shipments_display/express_carriers'));
+	
+	$carrierId = $this->getCarrier()->getCarrierId();
+	
+	if(!empty($sameDayCarriers)) {
+	    if(in_array($carrierId, $sameDayCarriers))
+	    {
+		return Ewave_Temando_Model_System_Config_Source_Shipment_Service::SAME_DAY;
+	    }
+	}
+	
+	if(!empty($expressCarriers)) {
+	    if(in_array($carrierId, $expressCarriers))
+	    {
+		return Ewave_Temando_Model_System_Config_Source_Shipment_Service::EXPRESS;
+	    }
+	}
+	
+	return Ewave_Temando_Model_System_Config_Source_Shipment_Service::STANDARD;
+    }
 }

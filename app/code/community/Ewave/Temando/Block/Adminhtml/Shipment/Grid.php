@@ -6,8 +6,6 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
     public function __construct()
     {
         parent::__construct();
-        $this->setDefaultSort('created_at');
-        $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
     }
 
@@ -34,6 +32,10 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 				    ->getAllowedWarehouseIds($currentUser->getId());
 	    $collection->addFieldToFilter('warehouse_id', array('in' => $allowedWarehouses));
 	}
+	
+	$collection->setOrder('status', 'ASC')
+		   ->setOrder('service_type', 'ASC')
+		   ->setOrder('created_at', 'DESC');
 	
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -115,6 +117,16 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 	    ));
 	}
 
+	$this->addColumn('service_type', array(
+            'header'    => $this->__('Service Type'),
+            'width'     => '120',
+            'align'     => 'left',
+            'index'     => 'service_type',
+            'type'      => 'options',
+            'options'   => array(1 => $this->__('Same Day'), 2 => $this->__('Express'), 3 => $this->__('Standard')),
+            'frame_callback' => array($this, 'decorateServiceType')
+        ));
+	
         $this->addColumn('action', array(
             'header' => Mage::helper('temando')->__('Action'),
             'width' => '100',
@@ -134,6 +146,28 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
         ));
 
         return parent::_prepareColumns();
+    }
+    
+    /**
+     * Decorate service type column values
+     *
+     * @return string
+     */
+    public function decorateServiceType($value, $row, $column, $isExport)
+    {
+        $cell = '';
+	switch($row->getServiceType()) {
+	    case Ewave_Temando_Model_System_Config_Source_Shipment_Service::SAME_DAY:
+		$cell = '<span class="tmd-grid-severity-critical"><span>'.$value.'</span></span>';
+		break;
+	    case Ewave_Temando_Model_System_Config_Source_Shipment_Service::EXPRESS:
+		$cell = '<span class="tmd-grid-severity-major"><span>'.$value.'</span></span>';
+		break;
+	    case Ewave_Temando_Model_System_Config_Source_Shipment_Service::STANDARD:
+		$cell = '<span class="tmd-grid-severity-minor"><span>'.$value.'</span></span>';
+		break;
+	}
+        return $cell;
     }
     
     protected function _prepareMassaction() {

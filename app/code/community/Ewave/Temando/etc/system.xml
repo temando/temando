@@ -207,7 +207,7 @@
                     </fields>
                 </carbon>
 		<shipments_display translate="label">
-		    <label>Temando Shipments Display</label>
+		    <label>Temando Manage Shipments</label>
 		    <frontend_type>text</frontend_type>
 		    <sort_order>45</sort_order>
 		    <show_in_default>1</show_in_default>
@@ -231,6 +231,36 @@
 				     ]]>
 			    </comment>
 			</shipment_order_statuses>
+			<sameday_carriers translate="label">
+                            <label>Same Day Carriers</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>20</sort_order>
+                            <source_model>temando/shipping_carrier_temando_source_method</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>
+				<![CDATA[
+				    Selected carriers will be prioritised and marked as "Same Day" within the Manage Shipments page.<br/>
+				    Use CTRL + click to select multiple carriers
+				]]>
+			    </comment>
+                        </sameday_carriers>
+			<express_carriers translate="label">
+                            <label>Express Carriers</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>30</sort_order>
+                            <source_model>temando/shipping_carrier_temando_source_method</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>
+				<![CDATA[
+				    Selected carriers will be prioritised and marked as "Express" within the Manage Shipments page.<br/>
+				    Use CTRL + click to select multiple carriers
+				]]>
+			    </comment>
+			</express_carriers>
 		    </fields>
 		</shipments_display>
                 <pricing translate="label">

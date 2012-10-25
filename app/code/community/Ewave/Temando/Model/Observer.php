@@ -93,6 +93,7 @@ class Ewave_Temando_Model_Observer
             ->setDestinationCity($order->getShippingAddress()->getCity())
             ->setReadyTime('AM')
 	    ->setWarehouseId($warehouse_id)
+	    ->setServiceType(is_null($selected_quote) ? Ewave_Temando_Model_System_Config_Source_Shipment_Service::STANDARD : $selected_quote->getServiceType())
             ->save();
             
 	//packages returned from API saved on quote

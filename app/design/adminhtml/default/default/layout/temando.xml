@@ -20,6 +20,9 @@
     </adminhtml_system_config_edit>
 
     <temando_adminhtml_shipment_index>
+	<reference name="head">
+            <action method="addItem"><type>skin_css</type><name>temando/styles.css</name></action>
+        </reference>
         <reference name="content">
             <block type="temando/adminhtml_shipment" name="temando_shipment">
                 <block type="temando/adminhtml_shipment_grid" name="temando_shipment_grid" />

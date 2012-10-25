@@ -15,3 +15,20 @@ div.confirm-insurance td.c2 {
     font-size: 12px;
     font-style: italic;
 }
+
+.tmd-grid-severity-critical,
+.tmd-grid-severity-critical span,
+.tmd-grid-severity-major,
+.tmd-grid-severity-major span,
+.tmd-grid-severity-minor,
+.tmd-grid-severity-minor span,
+.tmd-grid-severity-notice,
+.tmd-grid-severity-notice span { display:block; height:16px; background-image:url(images/bg_notifications.gif); background-repeat:no-repeat; font:bold 10px/16px Arial, Helvetica, sans-serif; text-transform:uppercase; text-align:center; padding:0 0 0 7px; margin:1px 0; white-space:nowrap; color:#fff; }
+.tmd-grid-severity-critical { background-position:0 0; }
+.tmd-grid-severity-critical span { background-position:100% 0; padding:0 7px 0 0; }
+.tmd-grid-severity-major { background-position:0 -16px; }
+.tmd-grid-severity-major span { background-position:100% -16px; padding:0 7px 0 0; }
+.tmd-grid-severity-minor { background-position:0 -32px; }
+.tmd-grid-severity-minor span { background-position:100% -32px; padding:0 7px 0 0; }
+.tmd-grid-severity-notice { background-position:0 -48px; }
+.tmd-grid-severity-notice span { background-position:100% -48px; padding:0 7px 0 0; }
