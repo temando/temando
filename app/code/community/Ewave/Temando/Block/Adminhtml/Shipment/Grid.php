@@ -57,6 +57,15 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 
     protected function _prepareColumns()
     {
+	$this->addColumn('service_type', array(
+            'header'    => $this->__('Urgency'),
+            'width'     => '120',
+            'align'     => 'left',
+            'index'     => 'service_type',
+            'type'      => 'options',
+            'options'   => array(1 => $this->__('Same Day'), 2 => $this->__('Express'), 3 => $this->__('Standard')),
+            'frame_callback' => array($this, 'decorateServiceType')
+        ));
 
         $this->addColumn('order_number', array(
             'header' => Mage::helper('temando')->__('Order #'),
@@ -116,16 +125,6 @@ class Ewave_Temando_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block_W
 		'renderer'  => new Ewave_Temando_Block_Adminhtml_Shipment_Grid_Renderer_Origin,
 	    ));
 	}
-
-	$this->addColumn('service_type', array(
-            'header'    => $this->__('Service Type'),
-            'width'     => '120',
-            'align'     => 'left',
-            'index'     => 'service_type',
-            'type'      => 'options',
-            'options'   => array(1 => $this->__('Same Day'), 2 => $this->__('Express'), 3 => $this->__('Standard')),
-            'frame_callback' => array($this, 'decorateServiceType')
-        ));
 	
         $this->addColumn('action', array(
             'header' => Mage::helper('temando')->__('Action'),
