@@ -240,13 +240,14 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 	$carriers = explode(',', $rule->getActionDynamicCarriers());
 	$cleanQuotes = array();
 	
-	foreach($quotes as $quote) 
-	{   
-	    /* @var $quote Ewave_Temando_Model_Quote */
-	    if(in_array($quote->getCarrier()->getCarrierId(), $carriers))
-		$cleanQuotes[] = clone $quote;
+	if($quotes) {
+	    foreach($quotes as $quote) 
+	    {   
+		/* @var $quote Ewave_Temando_Model_Quote */
+		if(in_array($quote->getCarrier()->getCarrierId(), $carriers))
+		    $cleanQuotes[] = clone $quote;
+	    }
 	}
-	
 	if(empty($cleanQuotes))
 	    return null;
 	

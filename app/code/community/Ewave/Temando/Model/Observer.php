@@ -11,7 +11,15 @@ class Ewave_Temando_Model_Observer
         $order = $observer->getOrder();
         /* @var $order Mage_Sales_Model_Order */
 
-        $__t = explode('_', $order->getShippingMethod());
+	$shippingMethod = $order->getShippingMethod();
+	
+	$__t = explode('_', $shippingMethod);	
+	// Capture M2EPro orders - set flat rate method
+	if ($__t[0] == 'm2eproshipping') {
+	    $shippingMethod = 'temando_10001';
+	    $__t = explode('_', $shippingMethod);
+	}
+
         if ($__t[0] != 'temando') {
             return;
         }
@@ -20,14 +28,14 @@ class Ewave_Temando_Model_Observer
             $order->setShippingDescription(Mage::helper('temando')->getConfigData('options/shown_name'))->save();
         }
 
-        $selected_quote_id = preg_replace('#^[^_]*_#', '', $order->getShippingMethod());
-        $selected_options = preg_replace('#^([^_]*_){2}#', '', $order->getShippingMethod());
+        $selected_quote_id = preg_replace('#^[^_]*_#', '', $shippingMethod);
+        $selected_options = preg_replace('#^([^_]*_){2}#', '', $shippingMethod);
 	
 	//check for rule engine
 	$exploded = explode('_', $selected_options);
 	if(count($exploded) % 2 != 0) {
 	    $ruleId = preg_replace('/[^0-9]*/','',$selected_options);
-	    $selected_options = preg_replace('#^([^_]*_){3}#', '', $order->getShippingMethod());
+	    $selected_options = preg_replace('#^([^_]*_){3}#', '', $shippingMethod);
 	}
 	
 	$selected_quote = Mage::getModel('temando/quote')->load($selected_quote_id);
