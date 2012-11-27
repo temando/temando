@@ -116,6 +116,33 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Actions
 	    'note' => Mage::helper('temando')->__('For min/max, enter range as min:max (ie \'5.95:10.95\' to keep shipping price between $5.95 - $10.95)')
 	));
 	
+	$fieldset->addField('action_dynamic_show_carrier_name', 'select', array(
+	    'label' => Mage::helper('temando')->__('Show Carrier Name'),
+	    'title' => Mage::helper('temando')->__('Show Carrier Name'),
+	    'name' => 'action_dynamic_show_carrier_name',
+	    'options' => array(
+                '1' => Mage::helper('temando')->__('Yes'),
+                '0' => Mage::helper('temando')->__('No'),
+            ),
+	));
+	
+	$fieldset->addField('action_dynamic_show_carrier_time', 'select', array(
+	    'label' => Mage::helper('temando')->__('Show Transit Type and Time'),
+	    'title' => Mage::helper('temando')->__('Show Transit Type and Time'),
+	    'name' => 'action_dynamic_show_carrier_time',
+	    'options' => array(
+                '1' => Mage::helper('temando')->__('Yes'),
+                '0' => Mage::helper('temando')->__('No'),
+            ),
+	));
+	
+	$fieldset->addField('action_dynamic_label', 'text', array(
+	    'label' => Mage::helper('temando')->__('Alternative Method Title'),
+	    'title' => Mage::helper('temando')->__('Alternative Method Title'),
+	    'name' => 'action_dynamic_label',
+		'note' => Mage::helper('temando')->__('Appears in place of carrier name when \'Show Carrier Name\' is off')	,    
+	));
+	
 	$fieldset = $form->addFieldset('actions_restrict_fieldset', array(
 	    'legend' => Mage::helper('temando')->__('Restrict Shipping Configuration')
 	));

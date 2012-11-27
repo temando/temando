@@ -79,6 +79,24 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Main
             ),
         ));
 	
+	$dateFormatIso = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
+        $fieldset->addField('from_date', 'date', array(
+            'name'   => 'from_date',
+            'label'  => Mage::helper('temando')->__('From Date'),
+            'title'  => Mage::helper('temando')->__('From Date'),
+            'image'  => $this->getSkinUrl('images/grid-cal.gif'),
+            'input_format' => Varien_Date::DATE_INTERNAL_FORMAT,
+            'format'       => $dateFormatIso
+        ));
+        $fieldset->addField('to_date', 'date', array(
+            'name'   => 'to_date',
+            'label'  => Mage::helper('temando')->__('To Date'),
+            'title'  => Mage::helper('temando')->__('To Date'),
+            'image'  => $this->getSkinUrl('images/grid-cal.gif'),
+            'input_format' => Varien_Date::DATE_INTERNAL_FORMAT,
+            'format'       => $dateFormatIso
+        ));
+	
 	$fieldset->addField('priority', 'text', array(
 	    'label' => Mage::helper('temando')->__('Priority'),
 	    'title' => Mage::helper('temando')->__('Priority'),

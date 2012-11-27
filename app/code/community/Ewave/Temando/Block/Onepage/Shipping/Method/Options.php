@@ -92,4 +92,29 @@ class Ewave_Temando_Block_Onepage_Shipping_Method_Options extends Mage_Checkout_
         return Mage::registry('temando_current_options');
     }
     
+    public function getDynamicRuleTitle($permutation) {
+	$title = '';
+	if($permutation->getRuleId()) {
+	    $rule = Mage::getModel('temando/rule')->load($permutation->getRuleId());
+	    if($rule->isDynamic()) {
+		$title = $permutation->getDynamicDescriptionFromRule(
+			    $rule->getActionDynamicShowCarrierName(),
+			    $rule->getActionDynamicShowCarrierTime(),
+			    $rule->getActionDynamicLabel()
+			 );
+	    }
+	} else {
+	    if(Mage::helper('temando')->getConfigData('options/show_name_time'))
+	    {
+		$title = $permutation->getDescription(false);
+	    }
+	    else
+	    {
+		$title = Mage::helper('temando')->getConfigData('options/shown_name');
+	    }
+	}
+	
+	return $title;
+    }
+    
 }

@@ -90,6 +90,10 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 	}
 	foreach($collection->getItems() as $rule) {
 	    /* @var $rule Ewave_Temando_Model_Rule */
+	    if(!$rule->validateDate()) {
+		continue;
+	    }
+	    
 	    $store_ids = explode(',', $rule->getStoreIds());
 	    if(in_array($store_id, $store_ids) && 
 	       $rule->isValid($weight, $subtotal, $items, $pcode))
@@ -194,10 +198,9 @@ class Ewave_Temando_Model_Hybrid extends Mage_Core_Model_Abstract
 		    $permutations = $options->applyAll($ruleQuote);
 		    
 		    foreach ($permutations as $permutation_id => $permutation) {
-			$title = $this->_helper->getConfigData('options/shown_name');
-			if ($this->_helper->getConfigData('options/show_name_time')) {
-			    $title = $permutation->getDescription($this->_helper->getConfigData('options/show_carrier_names'));
-			}
+			$title = $permutation->getDynamicDescriptionFromRule($rule->getActionDynamicShowCarrierName(),
+									     $rule->getActionDynamicShowCarrierTime(),
+									     $rule->getActionDynamicLabel());
 			$methods[]  = Mage::getModel('shipping/rate_result_method')
 				    ->setCarrier(self::CARRIER_CODE)
 				    ->setCarrierTitle(Mage::getStoreConfig('carriers/temando/title'))

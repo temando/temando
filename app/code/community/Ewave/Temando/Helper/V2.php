@@ -20,7 +20,7 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
      */
     public function getProductPackages($item, $product) {
 	
-	$packages = array();
+	$packages = array(); $simpleProductWeight = 0;
 	
 	if ($product->getTypeId() == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE) {
 	    //try getting from selected simple product first
@@ -29,19 +29,20 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 		//packaging defined - use it
 		$packages = $this->getPackages($simpleProduct);
 	    }
+	    $simpleProductWeight = $simpleProduct->getWeight();
 	}
 	
 	if(!empty($packages)) return $packages;
 	
 	//all other cases - get parent/simple product packaging
 	if($product->getData('temando_packaging_mode')) {
-	    $packages = $this->getPackages($product);
+	    $packages = $this->getPackages($product, $simpleProductWeight);
 	} 
 	
 	if(!empty($packages)) return $packages;
 	
 	//last resort - just use defaults
-	return array($this->getDefaultPackage($product));
+	return array($this->getDefaultPackage($product, $simpleProductWeight));
 	
     }
     
@@ -52,7 +53,7 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
      * @param type $product
      * @return type 
      */
-    protected function getPackages($product) {
+    protected function getPackages($product, $simpleProductWeight) {
 	$packages = array();
 	
 	if($product->getData('temando_packaging_mode')) {
@@ -75,7 +76,7 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
 	} 
 	//use defaults if empty
 	if(empty($packages)) {
-	    $packages[] = $this->getDefaultPackage($product);
+	    $packages[] = $this->getDefaultPackage($product, $simpleProductWeight);
 	}
 	
 	return $packages;
@@ -87,12 +88,12 @@ class Ewave_Temando_Helper_V2 extends Ewave_Temando_Helper_Data {
      * @param type $product
      * @return array 
      */
-    protected function getDefaultPackage($product) {
+    protected function getDefaultPackage($product, $simpleProductWeight) {
 	return array(
 	    'description' => $product->getName(),
 	    'packaging' => $this->getConfigData('defaults/packaging'),
 	    'fragile' => $this->getConfigData('defaults/fragile'),
-	    'weight' => $product->getWeight(),
+	    'weight' => $product->getWeight() ? $product->getWeight() : $simpleProductWeight,
 	    'length' => $this->getConfigData('defaults/length'),
 	    'width' => $this->getConfigData('defaults/width'),
 	    'height' => $this->getConfigData('defaults/height')

@@ -138,6 +138,31 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	return $return;
     }
     
+    /**
+     * Validates current date against the configured range (from/to)
+     * of this rule
+     * 
+     * @return boolean true if now is within dates, false otherwise
+     */
+    public function validateDate()
+    {
+	$current_date = Mage::app()->getLocale()->storeDate(Mage::app()->getStore()->getId());
+	/* @var $current_date Zend_Date */
+	if($fromDate = $this->getData('from_date')) {
+	    $from = new Zend_Date($fromDate, Varien_Date::DATE_INTERNAL_FORMAT);
+	    if($current_date->compareDate($from) === -1)
+		return false;
+	}
+	
+	if($toDate = $this->getData('to_date')) {
+	    $to = new Zend_Date($toDate, Varien_Date::DATE_INTERNAL_FORMAT);
+	    if($current_date->compareDate($to) === 1)
+		return false;
+	}
+	
+	return true;
+    }
+    
     public function isDynamic()
     {
 	if($this->getActionRateType() == Ewave_Temando_Model_System_Config_Source_Rule_Type::DYNAMIC) {
@@ -152,5 +177,47 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	    return true;
 	}
 	return false;
+    }
+    
+    /**
+     * Validate rule data
+     *
+     * @param Varien_Object $object
+     *
+     * @return bool|array - return true if validation passed successfully. Array with errors description otherwise
+     */
+    public function validateData(Varien_Object $object)
+    {
+        $result   = array();
+        $fromDate = $toDate = null;
+
+        if ($object->hasFromDate() && $object->hasToDate()) {
+            $fromDate = $object->getFromDate();
+            $toDate = $object->getToDate();
+        }
+
+        if ($fromDate && $toDate) {
+            $fromDate = new Zend_Date($fromDate, Varien_Date::DATE_INTERNAL_FORMAT);
+            $toDate = new Zend_Date($toDate, Varien_Date::DATE_INTERNAL_FORMAT);
+	    
+            if ($fromDate->compare($toDate) === 1) {
+                $result[] = Mage::helper('rule')->__('End Date must be greater than Start Date.');
+            }
+        }
+
+        if ($object->hasWebsiteIds()) {
+            $websiteIds = $object->getWebsiteIds();
+            if (empty($websiteIds)) {
+                $result[] = Mage::helper('rule')->__('Websites must be specified.');
+            }
+        }
+        if ($object->hasCustomerGroupIds()) {
+            $customerGroupIds = $object->getCustomerGroupIds();
+            if (empty($customerGroupIds)) {
+                $result[] = Mage::helper('rule')->__('Customer Groups must be specified.');
+            }
+        }
+
+        return !empty($result) ? $result : true;
     }
 }

@@ -65,7 +65,7 @@ $installer->run("
 
 $installer->run("
 ALTER TABLE {$this->getTable('temando_shipment')}
-  ADD `warehouse_id` int(11) NOT NULL AFTER `anticipated_cost`
+  ADD `warehouse_id` int(11) NOT NULL DEFAULT 1 AFTER `anticipated_cost`
 ;");
 
 $installer->endSetup();

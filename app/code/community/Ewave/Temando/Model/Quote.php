@@ -232,6 +232,30 @@ class Ewave_Temando_Model_Quote extends Mage_Core_Model_Abstract
         return $title;
     }
     
+    public function getDynamicDescriptionFromRule($show_name, $show_time, $custom_title)
+    {
+	$carrier = $this->getCarrier();
+	$title = '';
+	
+	if($show_name) {
+	    $title .= $carrier->getCompanyName() . ' - ';
+	} else {
+	    if($custom_title) {
+		$title .= trim($custom_title) . ' - ';
+	    }
+	}
+	
+	if($show_time) {
+	    $title .= $this->getDeliveryMethod();
+	}
+	
+	if($this->getExtraTitle()) {
+	$title . ' [' .$this->getExtraTitle(). ']';
+	}
+	
+	return $title; //. ' [' . $this->getEtaDescription() . $this->getExtraTitle() . ']';
+    }
+    
     public function getTotalPriceIncSelectedExtras()
     {
 	$price = $this->getTotalPrice();

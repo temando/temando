@@ -51,6 +51,8 @@ class Ewave_Temando_Adminhtml_RuleController extends Mage_Adminhtml_Controller_A
     public function saveAction() {
 	if ($data = $this->getRequest()->getPost()) {
 	    $model = Mage::getModel('temando/rule');
+	    $data = $this->getRequest()->getPost();
+            $data = $this->_filterDates($data, array('from_date', 'to_date'));
 	    $id = $this->getRequest()->getParam('id');
 	    if ($id) {
 		$model->load($id);

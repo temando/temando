@@ -15,7 +15,7 @@
     <adminhtml_system_config_edit>
         <reference name="head">
             <action method="addItem"><type>skin_css</type><name>temando/styles.css</name></action>
-	    <block type="page/html" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
+	    <block type="adminhtml/template" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
         </reference>
     </adminhtml_system_config_edit>
 
@@ -65,7 +65,7 @@
     
     <temando_adminhtml_warehouse_edit>
 	<reference name="head">
-	    <block type="page/html" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
+	    <block type="adminhtml/template" template="ewave/temando/region.phtml" name="temando_region" output="toHtml" />
 	</reference>
         <reference name="left">
             <block type="temando/adminhtml_warehouse_edit_tabs" name="temando_warehouse_edit_tabs">
@@ -168,6 +168,7 @@
     <temando_adminhtml_rule_edit>
 	<reference name="head">
             <action method="addItem"><type>skin_js</type><name>js/temando-validate.js</name></action>
+	    <action method="addItem"><type>skin_js</type><name>js/temando-rule.js</name></action>
         </reference>
         <reference name="left">
             <block type="temando/adminhtml_rule_edit_tabs" name="temando_rule_edit_tabs">

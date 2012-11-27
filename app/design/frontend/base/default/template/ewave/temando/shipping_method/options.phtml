@@ -113,11 +113,12 @@ $shipto = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress
 					    <input name="temando_quotes" type="radio" value="<?php echo $_permutation->getId() . $ruleId . '_' . $_permutation_id; ?>" id="temando_quote_<?php echo $_quote->getId(). $ruleId . '_' . $_permutation_id; ?>"<?php if($_rate->getCode() === $this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio <?php echo $_class; ?>" onchange="return includingShipping('<?php echo $_rate->getCode();?>');"/>
                                         <?php endif; ?>
 					<label for="temando_quote_<?php echo $_permutation->getId(). $ruleId  . '_' . $_permutation_id; ?>">
-                                            <?php if ($this->helper('temando')->getConfigData('options/show_name_time')): ?>
+                                            <?php /** if ($this->helper('temando')->getConfigData('options/show_name_time')): ?>
                                                 <?php echo $_permutation->getDescription(false) ?>
                                             <?php else: ?>
                                                 <?php echo $this->helper('temando')->getConfigData('options/shown_name') ?>
-                                            <?php endif; ?>
+                                            <?php endif; **/?>
+					    <?php echo $this->getDynamicRuleTitle($_permutation) ?>
                                             <?php
                                                 $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax());
                                                 $_incl = $this->getShippingPrice($_rate->getPrice(), true);
