@@ -87,6 +87,14 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Conditions
 	    'note' => Mage::helper('temando')->__('ie \'2000:2200,3000,2600:2699\'')
 	));
 	
+	$fieldset->addField('condition_day', 'multiselect', array(
+            'name'      => 'condition_day[]',
+            'label'     => Mage::helper('temando')->__('Order Placed Day'),
+            'title'     => Mage::helper('temando')->__('Order Placed Day'),
+	    'values'	=> Mage::getSingleton('adminhtml/system_config_source_locale_weekdays')->getOptions(),
+	    'can_be_empty' => true,
+        ));
+	
 	$fieldset->addField('condition_time_type', 'select', array(
             'name'      => 'condition_time_type',
             'label'     => Mage::helper('temando')->__('Order Placed (time)'),

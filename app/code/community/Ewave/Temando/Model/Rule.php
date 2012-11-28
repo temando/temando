@@ -84,6 +84,7 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 		$this->_validateCondition('subtotal', $subtotal) &&
 		$this->_validateCondition('items', $items) &&
 		$this->_validateCondition('zone', $postcode) &&
+		$this->_validateDayCondition() &&
 		$this->_validateTimeCondition();
     }
     
@@ -136,6 +137,25 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	    $return = true;
 	}	
 	return $return;
+    }
+    
+    protected function _validateDayCondition()
+    {
+	$current_date = Mage::app()->getLocale()->storeDate(Mage::app()->getStore()->getId());
+	$today = new Zend_Date($current_date, Varien_Date::DATE_INTERNAL_FORMAT);	
+
+	
+	$validDays = explode(',', $rule->getData('condition_day'));
+	
+	if(is_array($validDays) && count($validDays) === 1 && !strlen(trim($validDays[0]))) 
+	    return true;
+
+	foreach($validDays as $validDay) {
+	    if($today->get(Zend_Date::WEEKDAY_DIGIT) == $validDay)
+		return true;
+	}
+	
+	return false;
     }
     
     /**
