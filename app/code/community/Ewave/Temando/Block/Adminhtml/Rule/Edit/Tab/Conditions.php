@@ -91,7 +91,7 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Conditions
             'name'      => 'condition_day[]',
             'label'     => Mage::helper('temando')->__('Order Placed Day'),
             'title'     => Mage::helper('temando')->__('Order Placed Day'),
-	    'values'	=> Mage::getSingleton('adminhtml/system_config_source_locale_weekdays')->getOptions(),
+	    'values'	=> Mage::getSingleton('adminhtml/system_config_source_locale_weekdays')->toOptionArray(),
 	    'can_be_empty' => true,
         ));
 	

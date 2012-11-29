@@ -145,7 +145,7 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	$today = new Zend_Date($current_date, Varien_Date::DATE_INTERNAL_FORMAT);	
 
 	
-	$validDays = explode(',', $rule->getData('condition_day'));
+	$validDays = explode(',', $this->getData('condition_day'));
 	
 	if(is_array($validDays) && count($validDays) === 1 && !strlen(trim($validDays[0]))) 
 	    return true;
