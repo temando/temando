@@ -109,6 +109,7 @@ class Ewave_Temando_Block_Adminhtml_Rule_Edit_Tab_Conditions
 	    'note'	=> Mage::helper('temando')->__('24HH:MM:SS'),
         ));
 	
+	$form->getElement('condition_day')->setSize(7);
         $form->setValues($model->getData());
         $this->setForm($form);
 
