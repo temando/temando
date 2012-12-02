@@ -116,7 +116,9 @@ class Ewave_Temando_Model_Rule extends Mage_Core_Model_Abstract
 	if($this->getData('condition_time_type')) {
 	    //need to validate time
 	    $current_time = Mage::app()->getLocale()->storeTimeStamp(Mage::app()->getStore()->getId());
-	    $config_time = strtotime(str_replace(',', ':', $this->getData('condition_time_value')));
+	    $config = new Zend_Date($current_time);
+	    $config->settime(str_replace(',', ':', $this->getData('condition_time_value')));
+	    $config_time = $config->getTimestamp();
 	    
 	    switch($this->getData('condition_time_type')) {
 		case Ewave_Temando_Model_System_Config_Source_Rule_Condition_Time::BEFORE:
