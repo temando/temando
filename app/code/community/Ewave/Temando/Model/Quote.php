@@ -250,7 +250,7 @@ class Ewave_Temando_Model_Quote extends Mage_Core_Model_Abstract
 	}
 	
 	if($this->getExtraTitle()) {
-	$title . ' [' .$this->getExtraTitle(). ']';
+	    $title .= $this->getExtraTitle();
 	}
 	
 	return $title; //. ' [' . $this->getEtaDescription() . $this->getExtraTitle() . ']';
